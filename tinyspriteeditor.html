@@ -1,0 +1,1457 @@
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1">
+<title>Tiny sprite editor 20160523 by Boris van Schooten</title>
+<style>
+
+button, select, option {
+	font-size: 110%;
+}
+
+input.number {
+	width: 40px;
+}
+input.color {
+	width: 85px;
+}
+div.pixel {
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.anchorbutton {
+	font-family: "Ubuntu";
+	padding: 3px 10px 2px 10px;
+	color: #4c4c4c;
+	background-color: #e2e2e2;
+    background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#dddddd));
+    background: -moz-linear-gradient(top,  #eeeeee,  #dddddd);
+	text-decoration: none;
+	border: 1px outset #888888;
+	border-radius: 4px;
+	font-size: 110%;
+}
+
+.spritezoom {
+	margin-left: 20px;
+	margin-bottom: 20px;
+	float: left;
+}
+
+.sprite-bg {
+	/* this class is also used to set background style through JS */
+/*	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAHklEQVQYlWNwcHD4n5CQ8B8XzYBP0sHB4T/DsDABAJIZe8ESbb4LAAAAAElFTkSuQmCC');
+*/
+/*	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAAXNSR0IArs4c6QAAAAZiS0dEAAAAAAAA+UO7fwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB+AFFQoIHkr2q0IAAAAjSURBVBjTY/z///9EBlSgj8xhYiAAKFfAgm4nAwPDRTq7AQBMegTPiNorbQAAAABJRU5ErkJggg=="), linear-gradient(to bottom, #ff0000 0%, #ff0000 100%);*/
+	z-index: -2;
+}
+
+.onionskin-bg {
+}
+
+.zoomcontainer {
+	float: left;
+	margin-left: 20px;
+}
+
+.zoomcontainer button,
+.zoomcontainer input {
+	margin-top: 4px;
+	margin-bottom: 4px;
+}
+
+.buttoncontainer {
+	float: left;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* Internet Explorer/Edge */
+  user-select: none;           /* Non-prefixed version, currently
+                                  not supported by any browser */
+}
+
+.popup {
+	position: absolute;
+	margin-top: 10px;
+	margin-left: 10px;
+	padding: 10px;
+	background-color: #ccc;
+	color: #000;
+	border: 4px outset black;
+	z-index: 10;
+	display: none;
+}
+
+.closepopup {
+	position: absolute;
+	font-size: 240%;
+	color: #000;
+	background-color: #f22;
+	top: -15px;
+	left: -15px;
+	border: 2px solid #000;
+	border-radius: 50%;
+	cursor: pointer;
+	width: 40px;
+	height: 40px;
+	text-align: center;
+}
+
+.popup-form {
+	border: 3px outset black;
+	background-color: #eee;
+	color: #000;
+	padding: 10px;
+	margin: 10px;
+}
+
+.commandline {
+	display: none;
+	position:relative;
+	height: 0px;
+	top: 10px;
+}
+
+.commandline span {
+	background-color: #ff0;
+	border: 1px solid black;
+	border-radius: 5px;
+	padding-left: 20px;
+	padding-right: 15px;
+}
+.commandline-bubble {
+    border-style: solid;
+    position: absolute;
+    border-color: transparent transparent #ff0 transparent;
+    border-width: 8px;
+	left: 25px;
+    top: -16px;
+	pointer-events:none;
+}
+
+.closecommand {
+	position: absolute;
+	font-size: 150%;
+	color: #000;
+	background-color: #f22;
+	top: -5px;
+	left: -15px;
+	border: 2px solid #000;
+	border-radius: 50%;
+	cursor: pointer;
+	width: 25px;
+	height: 25px;
+	text-align: center;
+}
+
+
+
+.tilepreview,
+.animpreview {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	border: 1px solid black;
+	padding: 5px;
+	text-align: center;
+}
+
+.palette {
+	float: left;
+}
+
+.pencolor {
+	width: 80px;
+	height: 40px;
+	border: 1px solid black;
+}
+
+.pencolor-bg {
+	position: relative;
+	width: 80px;
+	height: 40px;
+}
+
+</style>
+</head>
+<body style="background-color: #ccc;">
+
+<div id="settings" class="popup">
+	<div class="closepopup noselect" onclick="openPopup('settings',false)">×</div>
+	<div style="padding-left: 20px; text-align: center; font-style: italic;"
+	>Tiny sprite editor 20160522 by Boris van Schooten.<br>
+	<a href="http://tmtg.net/tinyspriteeditor/">Homepage.</a>
+	<a href="https://opensource.org/licenses/BSD-3-ClauseRevised">BSD license.</a>
+	Download me and run locally! Modify me!</div>
+	<div style="padding-left: 20px; font-weight:bold; font-size:120%;"
+	>Settings</div>
+	<div class="popup-form">
+		Tile width: <input class="number" id="cfg_tilex" type="textfield" value="12">
+		</input>
+		Tile height: <input class="number" id="cfg_tiley" type="textfield" value="12">
+		</input>
+		Nr tiles X: <input class="number" id="cfg_nrtilesx" type="textfield" value="8">
+		</input>
+		Nr tiles Y: <input class="number" id="cfg_nrtilesy" type="textfield" value="8">
+		</input>
+		<button onclick="configSetSize();openPopup('settings',false);">Create new canvas</button>
+	</div>
+
+	<div class="popup-form">
+		Color for transparent background:
+		<input class="color" id="transparentcolor" type="textfield" value="#444">
+		</input>
+		<input type="checkbox" id="transparentchecker" checked="checked"> Use checkerboard</input>
+		<button onclick="configSpriteBG();openPopup('settings',false);">Set !</button>
+	</div>
+
+	<div class="popup-form">
+		Grid: color
+		<input class="color" id="gridcolor" type="textfield" value="#000">
+		</input>
+		thickness
+		<input class="number" id="gridthickness" type="textfield" value="1">
+		</input>
+		Sprite select box color:
+		<input class="color" id="selectboxcolor" type="textfield" value="#ff0">
+		</input>
+		<button onclick="configGrid();openPopup('settings',false);">Set !</button>
+	</div>
+
+	<div class="popup-form">
+		Enlarged image zoom:
+		<input class="number" id="sprzoomlevel" type="textfield" value="4">
+		</input>
+		Edit area zoom:
+		<input class="number" id="zoomlevel" type="textfield" value="24">
+		</input>
+		<button onclick="configZoom();openPopup('settings',false);">Set !</button>
+	</div>
+
+	<div class="popup-form">
+		Global background color:
+		<input class="color" id="globalbackground" type="textfield" value="#ddd">
+		</input>
+		Global foreground color:
+		<input class="color" id="globalforeground" type="textfield" value="#000">
+		</input>
+		<button onclick="configGlobal();openPopup('settings',false);">Set !</button>
+	</div>
+
+	<div class="popup-form">
+		Onion skin: transparency:
+		<input class="number" id="onionskinbgtrans" type="textfield" value="0.4">
+		</input>
+		size:
+		<input class="number" id="onionskinsize" type="textfield" value="0.33">
+		</input>
+		<button onclick="configOnionSkin();openPopup('settings',false);">Set !</button>
+	</div>
+
+</div>
+
+
+
+<div id="animation" class="popup">
+	<div class="closepopup noselect" onclick="openPopup('animation',false)">×</div>
+	<div style="padding-left: 20px; font-weight:bold; font-size:120%;"
+	>Animation Settings</div>
+	<div class="popup-form">
+		Sprite # of first frame:
+		x <input class="number" id="animstartx" type="textfield" value="0">
+		</input>
+		y <input class="number" id="animstarty" type="textfield" value="0">
+		</input>
+		<div style="padding-top: 10px;"></div>
+		Sprite # of last frame:
+		x <input class="number" id="animendx" type="textfield" value="3">
+		</input>
+		y <input class="number" id="animendy" type="textfield" value="0">
+		</input>
+		<div style="padding-top: 10px;"></div>
+		Delay (milliseconds):
+		<input class="color" id="animdelay" type="textfield" value="200">
+		</input>
+		<div style="padding-top: 10px;"></div>
+		<input type="checkbox" id="animpingpong"></input> Ping-pong animation
+		<div style="padding-top: 10px; text-align:center;">
+			<button onclick="configAnim();openPopup('settings',false);">Set !
+			</button>
+		</div>
+	</div>
+</div>
+
+
+<div class="sprite" style="float:left;">
+	<div id="tileselect" style="position: relative; width:0px; height:0px;">
+		<div id="tileselectbox"
+		style="position:relative; width:8px; height:8px; border: 1px solid green;"
+		></div>
+	</div>
+	<canvas id="sprite" class="sprite-bg" width=40 height=40 style="border: 1px solid black;">
+	</canvas>
+
+	<div class="tilepreview">
+	<canvas id="tilepreview" class="sprite-bg" width=36 height=36 style="border: 1px solid black;"></canvas>
+	<div style="padding: 5px;"></div>
+	<canvas id="tilepreview_l" class="sprite-bg" width=36 height=36 style="border: 1px solid black;"></canvas>
+	<div style="padding: 5px;"></div>
+	Tiling preview
+	</div>
+
+	<div class="animpreview">
+	<canvas id="animpreview" class="sprite-bg" width=12 height=12 style="border: 1px solid black;"></canvas>
+	<div style="padding: 5px;"></div>
+	<canvas id="animpreview_l" class="sprite-bg" width=36 height=36 style="border: 1px solid black;"></canvas>
+	<div style="padding: 5px;"></div>
+	Animation
+	<div style="padding: 5px;"></div>
+	<button id="animtoggle" 
+	style="padding-left: 0px; padding-right:0px; width: 55px;"
+	 onclick="toggleAnimation()">Play</button>
+	<button onclick="openPopup('animation',true);">⚙ Settings</button>
+	</div>
+
+</div>
+
+<div class="spritezoom">
+	<div id="tileselect_l" style="position: relative; width:0px; height:0px;">
+		<div id="tileselect_lbox"
+		style="position:relative; width:8px; height:8px; border: 1px solid green;"
+		></div>
+	</div>
+	<canvas id="sprite_l" class="sprite-bg" width=40 height=40 style="border: 1px solid black;">
+	</canvas>
+</div>
+
+<div class="zoomcontainer">
+	<div style="float:right;">
+		<button style="margin-left: 15px;" onclick="retrieveHistory(false)">Undo</button>
+		<div></div>
+		<button style="margin-left: 15px;" onclick="retrieveHistory(true)">Redo</button>
+		<div></div>
+		<button style="margin-left: 15px;" onclick="cutSprite()">Cut</button>
+		<div></div>
+		<button style="margin-left: 15px;" onclick="copySprite()">Copy</button>
+		<div></div>
+		<button style="margin-left: 15px;" onclick="pasteSprite()">Paste</button>
+		<div></div>
+		<button style="margin-left: 15px;" onclick="mergeSprite()">Merge</button>
+		<div></div>
+		<input id="setonionskin" type="checkbox" style="margin-left: 15px;" onchange="setOnionSkin()">Onion Skin</input>
+	</div>
+	<div id="zoom" style="float:left;">
+	</div>
+	<div style="clear:both; padding-bottom: 35px;">
+		<div id="commandline" class="commandline">
+			<div class="commandline-bubble"></div>
+			<div class="closecommand noselect" onclick="closeCommand()">×</div>
+			<span id="commandline-text"></span>
+		</div>
+	</div>
+	<div id="palette" class="palette">
+	</div>
+	<div style="float:left; margin-left: 10px;">
+		<div id="pencolor" class="pencolor">
+			<div style="position: relative; width:0px; height:0px;">
+				<div id="pencolor-bg" class="pencolor-bg sprite-bg"></div>
+			</div>
+		</div>
+		<div>
+			<input type="textfield" class="color" id="pencolor-text"
+			 onchange="setPenColorFromText();"></input>
+		</div>
+		<button onclick="startCommand('PickPenColor');">Pick color</button>
+	</div>
+
+</div>
+
+
+
+
+
+
+<div style="clear:both" ></div>
+
+<div class="buttoncontainer">
+	<button onclick="openPopup('settings',true)"
+	 style="margin-top: 10px; margin-right: 10px; font-size:160%; background-color: #f88; float:left;">⚙ Settings</button>
+	<button onclick="createOutline()">Outline</button>
+	<button onclick="startCommand('ReplaceColor')">Replace color</button>
+	Delete: 
+	<button onclick="startCommand('DelRow')">row</button>
+	<button onclick="startCommand('DelColumn')">column</button>
+	Insert: 
+	<button onclick="startCommand('InsRow')">row</button>
+	<button onclick="startCommand('InsColumn')">column</button>
+	Rorschach:
+	<button onclick="copyMirrorX()">X</button>
+	<button onclick="copyMirrorY()">Y</button>
+	<div></div>
+	Flood fill:
+	<button onclick="startCommand('FloodFill4')">4-way</button>
+	<button onclick="startCommand('FloodFill8')">8-way</button>
+	<button onclick="shiftSprite(-1,0)">⇐</button>
+	<button onclick="shiftSprite(1,0)">⇒</button>
+	<button onclick="shiftSprite(0,-1)">⇑</button>
+	<button onclick="shiftSprite(0,1)">⇓</button>
+	<button onclick="flipSprite(false)">↔</button>
+	<button onclick="flipSprite(true)">↕</button>
+	<button onclick="rotSprite(1)">↻</button>
+	<button onclick="rotSprite(-1)" style="margin-right: 30px;">↺</button>
+</div>
+
+<div style="clear:both;" ></div>
+
+<div style="float:left; margin-top:10px;">
+	With
+	<select id="imgloadsavetarget">
+	<option value="all">whole image</option>
+	<option value="sprite">current sprite</option>
+	</select>:
+	<button onclick="setDataUrlTextArea()">Make Data URL</button>
+	<button onclick="setImageFromDataUrl(dataurl.value)">Load Data URL</button>
+	<a download="image.png" href="#" onclick="return savePNG(this)"
+	><button>Save PNG</button></a>
+	<label for="pngfile" class="anchorbutton">Load Image</label>
+	<input type="file" id="pngfile" onchange="loadPNG(this.files)"
+	accept="image/*"></input>
+	<div></div>
+	<div style="width:220px; float:left; padding-top:10px; text-align:right;
+	padding-right: 10px;">
+	Click in textarea to copy its contents to clipboard.
+	</div>
+	<textarea style="width: 400px; height:50px; vertical-align: top;
+	font-size: 60%;" id="dataurl" 
+		onclick="this.focus(); this.select(); document.execCommand('copy');">
+	</textarea>
+</div>
+
+<script>
+
+var spritecanvas = document.getElementById("sprite");
+var spritecanvaszoom = document.getElementById("sprite_l");
+var zoom = document.getElementById("zoom");
+var palette = document.getElementById("palette");
+var dataurl = document.getElementById("dataurl");
+
+var undohistory;
+var cutbuffer, opbuffer;
+
+var nrPixelsBeforeAutosave=0;
+
+var tilex = 12;
+var tiley = 12;
+var nrtilesx = 8;
+var nrtilesy = 8;
+
+var curtilex = 0;
+var curtiley = 0;
+
+var sprzoomlevel=4;
+var zoomlevel=24;
+
+var pencolor = [255,255,255,255];
+
+var gridcolor = "#000";
+var gridthickness = 1;
+var selectboxcolor = "#0f0";
+
+var onionskin = {
+	src: null,
+	fgTrans: 1.0, // currently not configurable
+	bgTrans: 1.0,
+	size: 0.33,
+}
+document.getElementById("setonionskin").checked = false;
+
+var anim = {
+	delay: 200,
+	startframe: {x:0, y:0},
+	endframe: {x:3, y:0},
+	pingpong: false,
+	currentframe: 0,
+	direction: 1,
+	timer: null, // null indicates not running
+}
+
+var palettecolors = [
+	// primary colours
+	[255, 255, 255, 255],
+	[255, 214, 197, 255],
+	[255, 192,  64, 255],
+	[255, 255, 150, 255],
+	[180, 255, 100, 255],
+	[170, 255, 225, 255],
+	[170, 170, 255, 255],
+	[255, 160, 255, 255],
+
+	[192, 192, 192, 255],
+	[255,   0,   0, 255],
+	[255, 128,   0, 255],
+	[255, 255,   0, 255],
+	[  0, 255,   0, 255],
+	[  0, 255, 255, 255],
+	[  0,   0, 255, 255],
+	[255,   0, 255, 255],
+
+	// pico8
+	[128, 128, 128, 255],
+	[255,   0,  77, 255],
+	[255, 155,   0, 255],
+	[255, 231,  39, 255],
+	[  0, 226,  50, 255],
+	[ 41, 173, 255, 255],
+	[132, 112, 169, 255],
+	[255, 119, 168, 255],
+
+	[ 64,  64,  64, 255],
+	[128,   0,   0, 255],
+	[171,  82,  54, 255],
+	[192,  64,   0, 255],
+	[  0, 144,  61, 255],
+	[ 32,  51, 123, 255],
+	[ 32,   0, 150, 255],
+	[126,  37,  83, 255],
+
+	[  0,   0,   0, 255],
+	[130,  80,  80, 255],
+	[150, 110,  80, 255],
+	[140, 110,  80, 255],
+	[ 80, 130,  80, 255],
+	[ 80, 130, 130, 255],
+	[ 90,  90, 140, 255],
+	[140,  80, 130, 255],
+
+	[  0,   0,   0,   0],
+	//[ 52,  54,  53, 255],
+	//[194, 195, 199, 255],
+	//[255, 241, 232, 255],
+];
+
+// restore sprites and config
+doAutorestore();
+
+
+// events
+spritecanvas.addEventListener("click", function(e) {
+	var rect = spritecanvas.getBoundingClientRect();
+	curtilex = Math.floor((e.clientX-rect.left) / tilex);
+	curtiley = Math.floor((e.clientY-rect.top) / tiley);
+	updateTileSelect("tileselect",1);
+	updateTileSelect("tileselect_l",sprzoomlevel);
+	updateZoom();
+	updatePreviews();
+}, false);
+
+spritecanvaszoom.addEventListener("click", function(e) {
+	var rect = spritecanvaszoom.getBoundingClientRect();
+	curtilex = Math.floor((e.clientX-rect.left) / (sprzoomlevel*tilex) );
+	curtiley = Math.floor((e.clientY-rect.top) / (sprzoomlevel*tiley) );
+	updateTileSelect("tileselect",1);
+	updateTileSelect("tileselect_l",sprzoomlevel);
+	updateZoom();
+	updatePreviews();
+}, false);
+
+
+
+// ------------------------------------------------------------
+// config: read values from input fields and update screen accordingly
+
+function configSetSize() {
+	var res = confirm("This operation cannot be undone! Continue?");
+	if (!res) return;
+	tilex = parseInt(document.getElementById("cfg_tilex").value);
+	tiley = parseInt(document.getElementById("cfg_tiley").value);
+	nrtilesx = parseInt(document.getElementById("cfg_nrtilesx").value);
+	nrtilesy = parseInt(document.getElementById("cfg_nrtilesy").value);
+	updateCanvasSizes();
+}
+
+function configSpriteBG() {
+	var color = document.getElementById("transparentcolor").value;
+	var checker = document.getElementById("transparentchecker").checked;
+	var bg = "";
+	if (checker) bg += 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB+AFFRUeHzYTyk4AAAAvSURBVBjTY2RgYNBgYGBg+P//PwMDAwMDIyMjAzKfiYEAYMGlE8YnbAIunXR0AwBawBg7lpKXIgAAAABJRU5ErkJggg=="),';
+	bg += 'linear-gradient(to bottom, '+color+' 0%, '+color+' 100%';
+	var elements = document.getElementsByClassName('sprite-bg');
+	for (var i=0; i<elements.length; i++) {
+		elements[i].style.background = bg;
+	}
+}
+
+function configGrid() {
+	gridcolor = document.getElementById("gridcolor").value;
+	gridthickness = parseInt(document.getElementById("gridthickness").value);
+	selectboxcolor = document.getElementById("selectboxcolor").value;
+	updateTileSelect("tileselect",1);
+	updateTileSelect("tileselect_l",sprzoomlevel);
+	updateZoom();
+	updatePalette();
+}
+
+function configZoom() {
+	zoomlevel = parseInt(document.getElementById("zoomlevel").value);
+	sprzoomlevel = parseInt(document.getElementById("sprzoomlevel").value);
+	updateCanvasSize(spritecanvaszoom,sprzoomlevel);
+	updateTileSelect("tileselect",1);
+	updateTileSelect("tileselect_l",sprzoomlevel);
+	updatePreviews();
+	updateZoomedSprite();
+	updateZoom();
+	updatePreviewSizes();
+	updatePreviews();
+}
+
+function configGlobal() {
+	document.body.style.backgroundColor =
+		document.getElementById("globalbackground").value;
+	document.body.style.color = 
+		document.getElementById("globalforeground").value;
+	//document.body.style.color = 0.3*pencolor[0]+0.55*pencolor[1]+0.15*pencolor[2] < 128
+	//	? "#fff" : "#000";
+}
+
+function configOnionSkin() {
+	onionskin.bgTrans=Number(document.getElementById("onionskinbgtrans").value);
+	onionskin.size=Number(document.getElementById("onionskinsize").value);
+	updateZoom();
+}
+
+
+
+function configAnim() {
+	anim.startframe.x = parseInt(document.getElementById("animstartx").value);
+	if (anim.startframe.x < 0 || anim.startframe.x >= nrtilesx)
+		anim.startframe.x = 0;
+	anim.startframe.y = parseInt(document.getElementById("animstarty").value);
+	if (anim.startframe.y < 0 || anim.startframe.y >= nrtilesy)
+		anim.startframe.y = 0;
+	anim.endframe.x = parseInt(document.getElementById("animendx").value);
+	if (anim.endframe.x < 0 || anim.endframe.x >= nrtilesx)
+		anim.endframe.x = 0;
+	anim.endframe.y = parseInt(document.getElementById("animendy").value);
+	if (anim.endframe.y < 0 || anim.endframe.y >= nrtilesy)
+		anim.endframe.y = 0;
+	anim.delay = parseInt(document.getElementById("animdelay").value);
+	if (anim.delay < 40) anim.delay = 40;
+	if (anim.delay > 1000) anim.delay = 1000;
+	anim.pingpong = document.getElementById("animpingpong").checked;
+	toggleAnimation();
+	toggleAnimation();
+}
+
+function setPenColorFromText() {
+	var text = document.getElementById("pencolor-text").value.trim();
+	if (text.length != 9 || text.charAt(0) != "#") return;
+	pencolor[3] = parseInt(text.substring(1,3),16);
+	pencolor[0] = parseInt(text.substring(3,5),16);
+	pencolor[1] = parseInt(text.substring(5,7),16);
+	pencolor[2] = parseInt(text.substring(7,9),16);
+	updatePenColor();
+
+}
+
+// ------------------------------------------------------------
+// update
+
+function updatePenColor() {
+	var elem = document.getElementById("pencolor");
+	var elemtext = document.getElementById("pencolor-text");
+	elemtext.value = getHexString(pencolor);
+	elem.style.backgroundColor = getRGBAString(pencolor);
+}
+
+function updateCanvasSizes() {
+	updateCanvasSize(spritecanvas,1);
+	updateCanvasSize(spritecanvaszoom,sprzoomlevel);
+	updateTileSelect("tileselect",1);
+	updateTileSelect("tileselect_l",sprzoomlevel);
+	// buffers
+	cutbuffer = document.createElement("canvas");
+	cutbuffer.width = tilex;
+	cutbuffer.height = tiley;
+	opbuffer = document.createElement("canvas");
+	opbuffer.width = tilex;
+	opbuffer.height = tiley;
+	// history
+	undohistory = {
+		list: [],
+		pos: 0, // points to most recent history
+		lastpos: 0, // points to last item stored
+	};
+	for (var i=0; i<20; i++) {
+		var canv = document.createElement("canvas");
+		canv.width = nrtilesx*tilex;
+		canv.height = nrtilesy*tiley;
+		undohistory.list.push(canv);
+	}
+	updatePreviewSizes();
+	updateZoom();
+	doAutosaveConfig();
+}
+
+function updatePreviewSizes() {
+	updateCanvasSize(document.getElementById("tilepreview"),1,3,3);
+	updateCanvasSize(document.getElementById("tilepreview_l"),sprzoomlevel,3,3);
+	updateCanvasSize(document.getElementById("animpreview"),1,1,1);
+	updateCanvasSize(document.getElementById("animpreview_l"),sprzoomlevel,1,1);
+}
+
+function updateCanvasSize(elem,zoom,nrtx,nrty) {
+	if (!nrtx) nrtx = nrtilesx;
+	if (!nrty) nrty = nrtilesy;
+	elem.style.width = zoom*tilex*nrtx;
+	elem.width = zoom*tilex*nrtx;
+	elem.style.height = zoom*tiley*nrty;
+	elem.height = zoom*tiley*nrty;
+}
+
+function updateTileSelect(elem,zoom) {
+	var tileselect = document.getElementById(elem);
+	var tileselectbox = document.getElementById(elem+"box");
+	if (curtilex >= nrtilesx) curtilex=nrtilesx-1;
+	if (curtiley >= nrtilesy) curtiley=nrtilesy-1;
+	//alert(" "+curtilex+" "+curtiley);
+	tileselect.style.left = zoom*curtilex*tilex;
+	tileselect.style.top = zoom*curtiley*tiley;
+	tileselectbox.style.width = zoom*tilex;
+	tileselectbox.style.height = zoom*tiley;
+	tileselectbox.style.border = "1px solid "+selectboxcolor;
+}
+
+function updateZoomedSprite(srcelem,dstelem,tx,ty,width,height) {
+	if (!srcelem) srcelem=spritecanvas;
+	if (!dstelem) dstelem=spritecanvaszoom;
+	if (!tx) tx=0;
+	if (!ty) ty=0;
+	if (!width) width = tilex*nrtilesx;
+	if (!height) height = tiley*nrtilesy;
+	var data = srcelem.getContext("2d")
+		.getImageData(tilex*tx,tiley*ty,width,height).data;
+	dstelem.getContext("2d").clearRect(0,0,
+		sprzoomlevel*nrtilesx*tilex,sprzoomlevel*nrtilesy*tiley);
+	var idx=0;
+	for (var y=0; y<height; y++) {
+		for (var x=0; x<width; x++) {
+			if (data[idx+3] != 0) {
+				setColor(dstelem,sprzoomlevel, x, y,
+					[data[idx],data[idx+1],data[idx+2],data[idx+3]]);
+			}
+			idx += 4;
+		}
+	}
+}
+
+function updatePreviews() {
+	var tilecanv = document.getElementById("tilepreview");
+	var ctx = tilecanv.getContext('2d');
+	ctx.clearRect(0,0,tilex*3,tiley*3);
+	for (var y=0; y<3; y++) {
+		for (var x=0; x<3; x++) {
+			ctx.drawImage(spritecanvas,
+				tilex*curtilex,tiley*curtiley,tilex,tiley,
+				tilex*x,tiley*y,tilex,tiley);
+		}
+	}
+	var tilecanvzoom = document.getElementById("tilepreview_l");
+	updateZoomedSprite(tilecanv,tilecanvzoom,0,0,tilex*3,tiley*3);
+
+	//updateCanvasSize(document.getElementById("tilepreview"),1,3,3);
+	//updateCanvasSize(document.getElementById("tilepreview_l"),sprzoomlevel,3,3);
+	//updateCanvasSize(document.getElementById("animpreview"),1,1,1);
+	//updateCanvasSize(document.getElementById("animpreview_l"),sprzoomlevel,1,1);
+
+}
+
+// updates both clickable sprite and zoomed canvas
+function updateZoom() {
+	zoom.innerHTML = ""; // clear zoom
+	for (var y=0; y<tiley; y++) {
+		for (var x=0; x<tilex; x++) {
+			var div = createPixelDiv(x,y);
+			zoom.appendChild(div);
+		}
+	}
+	configSpriteBG();
+	// do autosave here to ensure data is saved often without noticing slowdown
+	doAutosave(false);
+}
+
+// ------------------------------------------------------------
+// history and cut buffer
+//https://dzone.com/articles/cross-browser-javascript-copy-and-paste
+
+function storeHistory(singlepixel) {
+	undohistory.pos = (undohistory.pos+1) % undohistory.list.length;
+	undohistory.lastpos = undohistory.pos;
+	undohistory.list[undohistory.pos].getContext('2d').clearRect(
+		0,0, tilex*nrtilesx,tiley*nrtilesy);
+	undohistory.list[undohistory.pos].getContext('2d').drawImage(spritecanvas,0,0);
+	doAutosave(singlepixel);
+}
+
+function retrieveHistory(forwards) {
+	spritecanvas.getContext("2d").clearRect(
+		0,0, tilex*nrtilesx,tiley*nrtilesy);
+	if (!forwards) {
+		undohistory.pos--;
+		if (undohistory.pos < 0) undohistory.pos = undohistory.list.length-1;
+	} else if (undohistory.pos < undohistory.lastpos) {
+		undohistory.pos = (undohistory.pos+1) % undohistory.list.length;
+	}
+	spritecanvas.getContext("2d").drawImage(undohistory.list[undohistory.pos],0,0);
+	updateZoomedSprite();
+	updateZoom();
+	updatePreviews();
+}
+
+function copySpriteToBuffer(buffer) {
+	var ctx = buffer.getContext('2d');
+	ctx.clearRect(0,0,tilex,tiley);
+	ctx.drawImage(spritecanvas,curtilex*tilex,curtiley*tiley,tilex,tiley,
+		0,0,tilex,tiley);
+}
+
+function copyBufferToSprite(buffer) {
+	var ctx = spritecanvas.getContext('2d');
+	ctx.drawImage(buffer,0,0,tilex,tiley,
+		curtilex*tilex,curtiley*tiley,tilex,tiley);
+	updateZoomedSprite();
+	updateZoom();
+	updatePreviews();
+}
+
+function cutSprite() {
+	copySpriteToBuffer(cutbuffer);
+	spritecanvas.getContext('2d').clearRect(curtilex*tilex, curtiley*tiley,
+		tilex,tiley);
+	storeHistory();
+	updateZoomedSprite();
+	updateZoom();
+	updatePreviews();
+}
+
+function copySprite() {
+	copySpriteToBuffer(cutbuffer);
+}
+
+function pasteSprite() {
+	spritecanvas.getContext('2d').clearRect(curtilex*tilex, curtiley*tiley,
+		tilex,tiley);
+	copyBufferToSprite(cutbuffer);
+	storeHistory();
+}
+
+function mergeSprite() {
+	copyBufferToSprite(cutbuffer);
+	storeHistory();
+}
+
+
+// ------------------------------------------------------------
+// autosave, save/restore config
+
+function doAutosave(singlepixel) {
+	if (!localStorage) return;
+	if (singlepixel) {
+		if (nrPixelsBeforeAutosave-- > 0) {
+			return;
+		}
+		nrPixelsBeforeAutosave = 20;
+	}
+	localStorage.setItem("tmtg.net.TinyPixelEditor.0",spritecanvas.toDataURL());
+}
+
+function doAutosaveConfig() {
+	if (!localStorage) return;
+	var config = {
+		tilex: tilex,
+		tiley: tiley,
+		nrtilesx: nrtilesx,
+		nrtilesy: nrtilesy,
+	};
+	localStorage.setItem("tmtg.net.TinyPixelEditor.config",
+		JSON.stringify(config));
+}
+
+
+function restoreConfigItems(config,items) {
+	for (var i=0; i<items.length; i++) {
+		var item = items[i];
+		var value = config[item];
+		window[item] = value;
+		document.getElementById("cfg_"+item).value = value;
+	}
+}
+
+function doAutorestore() {
+	if (!localStorage) return;
+	var url = localStorage.getItem("tmtg.net.TinyPixelEditor.0");
+	if (url) setImageFromDataUrl(url,"all");
+	var config = JSON.parse(
+		localStorage.getItem("tmtg.net.TinyPixelEditor.config") );
+	if (config) {
+		restoreConfigItems(config, ["tilex","tiley","nrtilesx","nrtilesy"]);
+	}
+}
+
+
+// ------------------------------------------------------------
+// commands: startCommand, select pixel to execute command
+
+var curCommand = null; // null indicates default (drawing)
+
+var commandTexts = {
+	PickPenColor: "Select pixel to pick color of",
+	ReplaceColor: "Select pixel to replace color of",
+	FloodFill4: "Select start pixel for 4-directional flood fill",
+	FloodFill8: "Select start pixel for 8-directional flood fill",
+	DelRow: "Select pixel of row to delete",
+	DelColumn: "Select pixel of column to delete",
+	InsRow: "Select position to insert row",
+	InsColumn: "Select position to insert column",
+}
+
+function startCommand(command) {
+	curCommand = command;
+	// show command text in command box
+	openPopup("commandline",true);
+	document.getElementById("commandline-text").innerHTML =
+		commandTexts[command];
+}
+
+function closeCommand(command) {
+	curCommand = null;
+	openPopup("commandline",false);
+}
+
+function commandDelRow(x,y) {
+	transformSprite("DelRow",{row:y});
+}
+
+function commandDelColumn(x,y) {
+	transformSprite("DelColumn",{col:x});
+}
+
+function commandInsRow(x,y) {
+	transformSprite("InsRow",{row:y});
+}
+
+function commandInsColumn(x,y) {
+	transformSprite("InsColumn",{col:x});
+}
+
+function commandReplaceColor(x,y) {
+	var srccolor = pickColor(curtilex*tilex + x,curtiley*tiley + y);
+	replaceColor(srccolor);
+}
+
+function recurseFloodFill(map,x,y,dir8) {
+	if (x<0 || x>=tilex || y<0 || y>=tiley) return;
+	if (!map[y][x]) return;
+	setColor(spritecanvas,1,curtilex*tilex + x,curtiley*tiley + y,pencolor);
+	map[y][x] = false;
+	recurseFloodFill(map,x-1,y,dir8);
+	recurseFloodFill(map,x+1,y,dir8);
+	recurseFloodFill(map,x,y-1,dir8);
+	recurseFloodFill(map,x,y+1,dir8);
+	if (dir8) {
+		recurseFloodFill(map,x-1,y-1,dir8);
+		recurseFloodFill(map,x+1,y-1,dir8);
+		recurseFloodFill(map,x-1,y+1,dir8);
+		recurseFloodFill(map,x+1,y+1,dir8);
+	}
+}
+
+function commandFloodFill4(x,y) {
+	commandFloodFill(x,y,false);
+}
+function commandFloodFill8(x,y) {
+	commandFloodFill(x,y,true);
+}
+function commandFloodFill(x,y,dir8) {
+	var srccolor = pickColor(curtilex*tilex + x,curtiley*tiley + y);
+	var map = createBinaryMap(srccolor);
+	recurseFloodFill(map,x,y,dir8);
+	storeHistory();
+	updateZoomedSprite();
+	updateZoom();
+	updatePreviews();
+}
+
+function commandPickPenColor(x,y) {
+	pencolor = pickColor(curtilex*tilex + x,curtiley*tiley + y);
+	updatePenColor();
+}
+
+
+// ------------------------------------------------------------
+// animation
+
+
+function toggleAnimation() {
+	var togbut = document.getElementById("animtoggle");
+	if (anim.timer) {
+		clearInterval(anim.timer);
+		anim.timer = null;
+		togbut.innerHTML = "Play";
+	} else {
+		anim.timer = setInterval(doAnimation,anim.delay);
+		togbut.innerHTML = "Stop";
+	}
+}
+
+function doAnimation() {
+	var startFrame = anim.startframe.x + anim.startframe.y*nrtilesx;
+	var endFrame = anim.endframe.x + anim.endframe.y*nrtilesx;
+	if (startFrame > endFrame) {
+		var tmp = endFrame;
+		endFrame = startFrame;
+		startFrame = tmp;
+	}
+	anim.currentframe += anim.direction;
+	if (anim.currentframe > endFrame) {
+		if (anim.pingpong) {
+			anim.direction = -1;
+			anim.currentframe = endFrame-1;
+		} else {
+			anim.currentframe = startFrame;
+		}
+	}
+	if (anim.currentframe < startFrame) {
+		anim.direction = 1;
+		if (anim.pingpong) {
+			anim.currentframe = startFrame+1;
+			if (anim.currentframe > endFrame) anim.currentframe = endFrame;
+		} else {
+			anim.currentframe = endFrame;
+		}
+	}
+	var ax = anim.currentframe % nrtilesx;
+	var ay = Math.floor(anim.currentframe / nrtilesx);
+	var canv = document.getElementById("animpreview");
+	var ctx = canv.getContext("2d");
+	ctx.clearRect(0,0,tilex,tiley);
+	ctx.drawImage(spritecanvas,ax*tilex,ay*tiley,tilex,tiley,
+			0,0,tilex,tiley);
+	var canvzoom = document.getElementById("animpreview_l");
+	updateZoomedSprite(canv,canvzoom,0,0,tilex,tiley);
+}
+
+
+function setOnionSkin() {
+	var skin = document.getElementById("setonionskin").checked;
+	if (skin) {
+		onionskin.src = {x: curtilex, y:curtiley};
+	} else {
+		onionskin.src = null;
+	}
+	updateZoom();
+}
+
+// ------------------------------------------------------------
+// html manipulation
+
+function openPopup(popupid,open) {
+	var elem = document.getElementById(popupid);
+	elem.style.display = open ? "block" : "none";
+}
+
+function hasOnionSkin() {
+	if (!onionskin.src) return false;
+	return onionskin.src.x != curtilex || onionskin.src.y != curtiley;
+}
+
+function createPixelDiv(x,y) {
+	var div = document.createElement("div");
+	if (x==0) div.style.clear="both";
+	div.style.cssFloat="left";
+	div.style.width=zoomlevel+"px";
+	div.style.height=zoomlevel+"px";
+	var bgcolor = pickColor(curtilex*tilex + x,curtiley*tiley + y);
+	if (hasOnionSkin()) {
+		bgcolor[3] *= onionskin.fgTrans;
+	}
+	div.style.backgroundColor = getRGBAString(bgcolor);
+	div.className = "pixel noselect";
+	div.style.border = gridthickness+"px solid "+gridcolor;
+	div.addEventListener("click",function(e) {
+		if (curCommand) {
+			window["command"+curCommand](x,y);
+			closeCommand();
+			return;
+		}
+		var col = pickColor(curtilex*tilex + x,curtiley*tiley + y);
+		var pen = [pencolor[0],pencolor[1],pencolor[2],pencolor[3]];
+		if (col[0]==pen[0]&&col[1]==pen[1]
+		&&  col[2]==pen[2]&&col[3]==pen[3]) {
+			pen = [0,0,0,0];
+		}
+		setColor(spritecanvas,1,curtilex*tilex + x,curtiley*tiley + y,pen);
+		setColor(spritecanvaszoom,sprzoomlevel,
+			curtilex*tilex + x,curtiley*tiley + y, pen);
+		setColorPreviews(x,y,pen);
+		if (hasOnionSkin()) {
+			pen[3] *= onionskin.fgTrans;
+		}
+		div.style.backgroundColor = getRGBAString(pen);
+		storeHistory(true);
+	});
+	var bgdiv = createBGDiv(zoomlevel);
+	if (hasOnionSkin()) {
+		var onion = createOnionDiv(x,y);
+		div.appendChild(onion);
+		div.appendChild(bgdiv);
+	} else {
+		div.appendChild(bgdiv);
+	}
+	return div;
+}
+
+function createPaletteDiv(idx,color) {
+	var div = document.createElement("div");
+	if (idx%8 == 0) div.style.clear="both";
+	div.style.cssFloat="left";
+	div.style.width=zoomlevel+"px";
+	div.style.height=zoomlevel+"px";
+	div.style.backgroundColor = getRGBAString(color);
+	div.className = "pixel noselect";
+	div.style.border = gridthickness+"px solid "+gridcolor;
+	div.addEventListener("click",function(e) {
+		pencolor = palettecolors[idx];
+		updatePenColor();
+	});
+	div.appendChild(createBGDiv(zoomlevel));
+	return div;
+}
+
+function createBGDiv(zoom) {
+	var div = document.createElement("div");
+	div.style.position="relative";
+	div.style.width=zoom+"px";
+	div.style.height=zoom+"px";
+	div.className = "sprite-bg noselect";
+	return div;
+}
+
+function createOnionDiv(x,y) {
+	var div = document.createElement("div");
+	div.style.position="absolute";
+	var ofs = 0.5 - onionskin.size*0.5;
+	div.style.width=Math.floor(zoomlevel*onionskin.size)+"px";
+	div.style.height=Math.floor(zoomlevel*onionskin.size)+"px";
+	div.style.marginTop=(-1+Math.floor(zoomlevel*ofs))+"px";
+	div.style.marginLeft=(-1+Math.floor(zoomlevel*ofs))+"px";
+	var bgcolor= pickColor(onionskin.src.x*tilex + x,onionskin.src.y*tiley + y);
+	bgcolor[3] *= onionskin.bgTrans;
+	if (bgcolor[3]) div.style.border = "1px solid "+gridcolor;
+	div.style.backgroundColor = getRGBAString(bgcolor);
+	div.className = "onionskin-bg noselect";
+	return div;
+}
+
+function updatePalette() {
+	palette.innerHTML = "";
+	for (var i=0; i<palettecolors.length; i++) {
+		var div = createPaletteDiv(i,palettecolors[i]);
+		palette.appendChild(div);
+	}
+}
+
+// ------------------------------------------------------------
+// load/save
+
+function getDataUrlFromImage() {
+	if (document.getElementById("imgloadsavetarget").selectedIndex) {
+		copySpriteToBuffer(opbuffer);
+		return opbuffer.toDataURL();
+	} else {
+		return spritecanvas.toDataURL();
+	}
+}
+
+function setDataUrlTextArea() {
+	dataurl.value = getDataUrlFromImage();
+}
+
+function setImageFromDataUrl(url,target) {
+	var img = new Image();
+	img.onload = function() {
+		ctx = spritecanvas.getContext("2d");
+		if ( (target && target=="sprite")
+		||   (!target 
+		      && document.getElementById("imgloadsavetarget").selectedIndex)
+		) {
+			ctx.drawImage(img,0,0,tilex,tiley,
+				tilex*curtilex,tiley*curtiley,tilex,tiley);
+		} else {
+			// fill canvas with transparency
+			updateCanvasSize(spritecanvas,1);
+			updateCanvasSize(spritecanvaszoom,sprzoomlevel);
+			ctx.drawImage(img, 0, 0);
+			updateTileSelect("tileselect",1);
+			updateTileSelect("tileselect_l",sprzoomlevel);
+		}
+		storeHistory();
+		updateZoomedSprite();
+		updateZoom();
+		updatePreviews();
+	}
+	//img.crossOrigin='';
+	img.src = url;
+}
+
+function loadPNG(files) {
+	if (files.length==0) return;
+	var reader = new FileReader();
+	reader.onload = function(e) {
+		setImageFromDataUrl(e.target.result);
+	}
+	reader.readAsDataURL(files[0]);
+}
+
+function savePNG(elem) {
+	var filename = prompt("Please enter filename (.png is added)","image");
+	if (!filename) return false;
+	elem.download = filename+".png";
+	elem.href = getDataUrlFromImage();
+	return true;
+}
+
+// ------------------------------------------------------------
+// image ops
+
+function getRGBAString(pixel) {
+	return "rgba("+pixel[0]+","+pixel[1]+","+pixel[2]+","+(pixel[3]/255)+")";
+}
+
+function getHexString(pixel) {
+	var color=0x1000000*pixel[3] + 0x10000*pixel[0] + 0x100*pixel[1] + pixel[2];
+	var colorstr = color.toString(16);
+	while (colorstr.length < 8) colorstr = "0"+colorstr;
+	return "#"+colorstr;
+}
+
+
+
+function pickColor(x,y) {
+	return spritecanvas.getContext("2d").getImageData(x, y, 1, 1).data;
+}
+
+function setColor(elem,zoom,x,y,color) {
+	var ctx = elem.getContext("2d");
+
+	/*var id = ctx.createImageData(zoom,zoom);// only do this once per page
+	var d  = id.data;// only do this once per page
+	for (var idx=0; idx<zoom*zoom*4; idx+=4) {
+		d[idx  ] = color[0];
+		d[idx+1] = color[1];
+		d[idx+2] = color[2];
+		d[idx+3] = color[3];
+	}
+	ctx.putImageData( id, zoom*x, zoom*y );*/
+
+	ctx.fillStyle = getRGBAString(color);
+	ctx.clearRect( zoom*x, zoom*y, zoom, zoom);
+	ctx.fillRect( zoom*x, zoom*y, zoom, zoom);
+}
+
+function setColorPreviews(x,y,color) {
+	for (var ty=0; ty<3; ty++) {
+		for (var tx=0; tx<3; tx++) {
+			setColor(document.getElementById("tilepreview"),1,
+				tilex*tx+x, tiley*ty+y,color);
+			setColor(document.getElementById("tilepreview_l"),sprzoomlevel,
+				tilex*tx+x, tiley*ty+y,color);
+		}
+	}
+}
+
+
+function replaceColor(color) {
+	for (var y=0; y<tiley; y++) {
+		for (var x=0; x<tilex; x++) {
+			var col = pickColor(curtilex*tilex + x,curtiley*tiley + y);
+			if (col[0]==color[0]&&col[1]==color[1]&&col[2]==color[2]) {
+				setColor(spritecanvas,1,
+					curtilex*tilex + x,
+					curtiley*tiley + y, pencolor);
+			}
+		}
+	}
+	storeHistory();
+	updatePreviews();
+	updateZoomedSprite();
+	updateZoom();
+}
+
+function createBinaryMap(matchcol) {
+	var map = [];
+	for (var y=0; y<tiley; y++) {
+		map.push([]);
+		for (var x=0; x<tilex; x++) {
+			var col = pickColor(curtilex*tilex + x,curtiley*tiley + y);
+			map[y].push(   col[0]==matchcol[0] && col[1]==matchcol[1]
+					    && col[2]==matchcol[2] && col[3]==matchcol[3]);
+		}
+	}
+	return map;
+}
+
+function createOutline() {
+	var map = createBinaryMap([0,0,0,0]);
+	//alert(JSON.stringify(map));
+	for (var y=0; y<tiley; y++) {
+		for (var x=0; x<tilex; x++) {
+			if (!map[y][x]) continue;
+			if( (x>0 && !map[y][x-1])
+			||  (x<tilex-1 && !map[y][x+1])
+			||  (y>0 && !map[y-1][x])
+			||  (y<tiley-1 && !map[y+1][x])
+			) {
+				setColor(spritecanvas,1,
+					curtilex*tilex + x,
+					curtiley*tiley + y, pencolor);
+			}
+		}
+	}
+	storeHistory();
+	updatePreviews();
+	updateZoomedSprite();
+	updateZoom();
+	//alert(JSON.stringify(map));
+}
+
+
+function opFuncShift(x,y,par) {
+	return {
+		x: (tilex + x - par.dx)%tilex,
+		y: (tiley + y - par.dy)%tiley,
+	}
+}
+
+function opFuncFlip(x,y,par) {
+	return {
+		x:  par.vertical ? x : tilex - 1 - x,
+		y: !par.vertical ? y : tiley - 1 - y,
+	}
+}
+
+function opFuncRot(x,y,par) {
+	return {
+		x: par.dir<0 ?  tilex - 1 - y  : y,
+		y: par.dir<0 ?  x              :tiley - 1 - x,
+	}
+}
+
+function opFuncDelRow(x,y,par) {
+	if (y == tiley-1) return "clear";
+	return {
+		x: x,
+		y: y<par.row ? y : (y+1)%tiley,
+	}
+}
+
+function opFuncDelColumn(x,y,par) {
+	if (x == tilex-1) return "clear";
+	return {
+		x: x<par.col ? x : (x+1)%tilex,
+		y: y,
+	}
+}
+
+function opFuncInsRow(x,y,par) {
+	if (y == par.row) return "pen";
+	return {
+		x: x,
+		y: y<par.row ? y : y-1,
+	}
+}
+
+function opFuncInsColumn(x,y,par) {
+	if (x == par.col) return "pen";
+	return {
+		x: x<par.col ? x : x-1,
+		y: y,
+	}
+}
+
+
+function opFuncCopyMirrorX(x,y,par) {
+	return {
+		x: x<tilex/2 ? x : tilex - 1 - x,
+		y: y,
+	}
+}
+
+function opFuncCopyMirrorY(x,y,par) {
+	return {
+		x: x,
+		y: y<tiley/2 ? y : tiley - 1 - y,
+	}
+}
+
+
+
+function transformSprite(op,param) {
+	copySpriteToBuffer(opbuffer);
+	var data = opbuffer.getContext("2d").getImageData(0,0,tilex,tiley).data;
+	for (var y=0; y<tiley; y++) {
+		for (var x=0; x<tilex; x++) {
+			var srcpos = window["opFunc"+op](x,y,param);
+			var col;
+			if (srcpos == "clear") {
+				col = [0,0,0,0];
+			} else if (srcpos == "pen") {
+				col = pencolor;
+			} else {
+				var idx = 4*(srcpos.x + tilex*srcpos.y);
+				col = [data[idx],data[idx+1],data[idx+2],data[idx+3]];
+			}
+			setColor(spritecanvas,1,curtilex*tilex + x,curtiley*tiley + y,col);
+			
+		}
+	}
+	storeHistory();
+	updatePreviews();
+	updateZoomedSprite();
+	updateZoom();
+}
+
+function shiftSprite(dx,dy) {
+	transformSprite("Shift",{dx:dx,dy:dy});
+}
+
+function flipSprite(vertical) {
+	transformSprite("Flip",{vertical:vertical});
+}
+
+function rotSprite(dir) {
+	transformSprite("Rot",{dir:dir});
+}
+
+function copyMirrorX(dx,dy) {
+	transformSprite("CopyMirrorX");
+}
+
+function copyMirrorY(dx,dy) {
+	transformSprite("CopyMirrorY");
+}
+
+
+updatePalette();
+updateCanvasSizes();
+updatePenColor();
+configSpriteBG();
+
+</script>
+</body>
+</html>

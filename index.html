@@ -1,0 +1,80 @@
+<html>
+<head>
+<title>Tiny Sprite Editor</title>
+<style>
+li {
+	margin-bottom: 10px;
+}
+
+a, a:visited {
+	color: #88c;
+}
+
+</style>
+</head>
+<body style="color:#ddd; background-color:#000;">
+<div style="right: 40px; position:absolute;"><a href="http://tmtg.net/"><img src="http://tmtg.net/emergencyexit-tomato-39.png"></a></div>
+
+<div style="font-weight: bold; font-size: 150%;">Tiny Sprite Editor</div>
+<div style="font-style:italic; margin-bottom:20px;">A tiny editor for editing tiny sprites - by Boris van Schooten - 23 May 2016 </div>
+
+
+
+A lightweight yet full featured sprite editor consisting of a single HTML
+page. No dependencies.  Can be downloaded and run from a file.  Distributed
+under revised BSD license.
+
+<p>
+
+<a href="tinyspriteeditor.html"
+ style="font-size: 120%; font-weight: bold;">&gt;&gt;&gt; Go to the sprite editor! &lt;&lt;&lt;</a>
+
+<p>
+
+I have been looking for a sprite editor to create small (as in 8x8 to 16x16)
+pixelated sprites and tiles in a spritesheet.  I was not too happy with the
+offerings.  On the PC, I've mostly been using Gimp, which is OK but has no
+animation and tile facilities. I also tried GraphicsGale and a couple of
+others, which I didn't like very much.  Further, I wanted a sprite editor that
+also works on Android.  I looked for sprite editors on Android or HTML sprite
+editors, but found they mostly suck.
+
+<p>
+
+So, I've made my own.  I wanted it to run in a Web browser and on Android.
+The editor assumes equally sized small sprites arranged in a sprite sheet.
+Editing is based on a single sprite within the sprite sheet.
+
+</ul>
+
+Features:
+
+<ul>
+
+<li>Works on any modern browser, also works well on mobile (tablet). It stores
+your image persistently so that it doesn't get lost when reloading the page.
+
+<li>Sprite sheet based editing
+
+<li>Data transfer via load/save PNG or data URLs
+
+<li>Fixed palette, colour pick, colour hex code entry
+
+<li>Various operations, like flip, rotate, shift, insert/delete row,
+add outline, flood fill, merge
+
+<li>Undo/Redo
+
+<li>Tiling preview
+
+<li>Realtime animation preview with pingpong option
+
+<li>Onion skinning
+
+<li>Configurable interface colours, edit zoom, preview zoom, onion skin
+
+</ul>
+
+
+</body>
+</html>
