@@ -1,13 +1,13 @@
 <html>
 <head>
-<title>Tiny Sprite Editor</title>
+<title>Tiny Sprite Editor - edit sprites online and on Android!</title>
 <style>
 li {
 	margin-bottom: 10px;
 }
 
 a, a:visited {
-	color: #88c;
+	color: #aae;
 }
 
 </style>
@@ -16,7 +16,7 @@ a, a:visited {
 <div style="right: 40px; position:absolute;"><a href="http://tmtg.net/"><img src="http://tmtg.net/emergencyexit-tomato-39.png"></a></div>
 
 <div style="font-weight: bold; font-size: 150%;">Tiny Sprite Editor</div>
-<div style="font-style:italic; margin-bottom:20px;">A tiny editor for editing tiny sprites - by Boris van Schooten - 23 May 2016 </div>
+<div style="font-style:italic; margin-bottom:20px;">A tiny editor for editing tiny sprites - by Boris van Schooten - 24 May 2016 </div>
 
 
 
@@ -31,19 +31,18 @@ under revised BSD license.
 
 <p>
 
-I have been looking for a sprite editor to create small (as in 8x8 to 16x16)
-pixelated sprites and tiles in a spritesheet.  I was not too happy with the
-offerings.  On the PC, I've mostly been using Gimp, which is OK but has no
-animation and tile facilities. I also tried GraphicsGale and a couple of
-others, which I didn't like very much.  Further, I wanted a sprite editor that
-also works on Android.  I looked for sprite editors on Android or HTML sprite
-editors, but found they mostly suck.
+I have been looking for a sprite editor for quickly creating small 
+(as in 8x8 to 16x16) pixelated sprites and tiles in a spritesheet.  Further, I
+wanted one that also works on Android.  There are a number of good PC sprite
+editors, but they are not tailored to this specific style of spriting.  I also
+looked for Android apps or online sprite editors, but found they mostly
+suck.
 
 <p>
 
-So, I've made my own.  I wanted it to run in a Web browser and on Android.
-The editor assumes equally sized small sprites arranged in a sprite sheet.
-Editing is based on a single sprite within the sprite sheet.
+So, I've made my own.  To keep things simple, the editor assumes equally sized
+small sprites arranged in a sprite sheet.  Editing is based on a single sprite
+within the sprite sheet.
 
 </ul>
 
@@ -65,7 +64,7 @@ add outline, flood fill, merge
 
 <li>Undo/Redo
 
-<li>Tiling preview
+<li>Realtime tiling preview
 
 <li>Realtime animation preview with pingpong option
 
@@ -75,6 +74,17 @@ add outline, flood fill, merge
 
 </ul>
 
+Known problems:
+
+<ul>
+
+<li>Persistent storage will not work in IE if you run the app from a file
+rather than a website.
+
+<li>Firefox sometimes fails to load a data URL or even restore state with a
+security exception.  Generally this is resolved by reloading it.
+
+</ul>
 
 </body>
 </html>

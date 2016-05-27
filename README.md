@@ -1,5 +1,5 @@
-# tinyspriteeditor
+# Tiny Sprite Editor
 A HTML sprite editor for editing spritesheets.
 
-See [index.html](index.html) for more info.
+See [index.html](https://cdn.rawgit.com/borisvanschooten/tinyspriteeditor/master/index.html) for more info.
 
