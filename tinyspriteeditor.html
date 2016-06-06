@@ -1046,7 +1046,7 @@ function updateZoom() {
 function updateSpriteBG() {
 	var bg = "";
 	if (spritebgchecker) bg += 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB+AFFRUeHzYTyk4AAAAvSURBVBjTY2RgYNBgYGBg+P//PwMDAwMDIyMjAzKfiYEAYMGlE8YnbAIunXR0AwBawBg7lpKXIgAAAABJRU5ErkJggg=="),';
-	bg += 'linear-gradient(to bottom, '+spritebgcolor+' 0%, '+spritebgcolor+' 100%';
+	bg += 'linear-gradient(to bottom, '+spritebgcolor+' 0%, '+spritebgcolor+' 100%)';
 	var elements = document.getElementsByClassName('sprite-bg');
 	for (var i=0; i<elements.length; i++) {
 		elements[i].style.background = bg;
@@ -1185,6 +1185,7 @@ function doAutorestore() {
 	}
 	spritenames = JSON.parse(
 		localStorage.getItem("tmtg.net.TinyPixelEditor.0.names") );
+	if (!spritenames) spritenames = {};
 }
 
 
@@ -1367,7 +1368,13 @@ function createPixelDiv(x,y) {
 	div.style.backgroundColor = getRGBAString(bgcolor);
 	div.className = "pixel noselect";
 	div.style.border = gridthickness+"px solid "+gridcolor;
-	div.addEventListener("mousedown",function(e) {
+	
+	function pixelMouseEvent(e,mousepressed) {
+		//e.preventDefault();
+		// buttons not defined in older versions of Chrome, so we use
+		// mousepressed as a fallback
+		// https://bugs.chromium.org/p/chromium/issues/detail?id=276941
+		if (!mousepressed && !e.buttons) return;
 		if (curCommand) {
 			window["command"+curCommand](x,y);
 			closeCommand();
@@ -1379,7 +1386,7 @@ function createPixelDiv(x,y) {
 			pen = [0,0,0,0];
 		}
 		var samecol =    col[0]==pen[0] && col[1]==pen[1]
-		              && col[2]==pen[2] && col[3]==pen[3];
+					  && col[2]==pen[2] && col[3]==pen[3];
 		setColor(spritecanvas,1,curtilex*tilex + x,curtiley*tiley + y,pen);
 		setColor(spritecanvaszoom,sprzoomlevel,
 			curtilex*tilex + x,curtiley*tiley + y, pen);
@@ -1391,7 +1398,11 @@ function createPixelDiv(x,y) {
 		prevclick.x = x;
 		prevclick.y = y;
 		if (!samecol) storeHistory(true);
-	});
+	}
+	div.addEventListener("mousedown",function(e) {pixelMouseEvent(e,true); } );
+	div.addEventListener("mouseover",function(e) {pixelMouseEvent(e,false); });
+	//div.addEventListener("touchstart",pixelMouseEvent);
+	//div.addEventListener("touchmove",pixelMouseEvent);
 	var bgdiv = createBGDiv(zoomlevel);
 	if (hasOnionSkin()) {
 		var onion = createOnionDiv(x,y);
@@ -1402,6 +1413,7 @@ function createPixelDiv(x,y) {
 	}
 	return div;
 }
+
 
 function createPaletteDiv(idx,color) {
 	var div = document.createElement("div");
