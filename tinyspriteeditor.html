@@ -341,7 +341,7 @@ input[type="file"] {
 			</div>
 		</div>
 		<div>
-			<input type="color" id="pencolor-text"
+			<input type="text" id="pencolor-text"
 			 onchange="setPenColorFromText();">
 		</div>
 		<button onclick="startCommand('PickPenColor');">Pick color</button>
@@ -894,7 +894,7 @@ function setPalette(elem) {
 function updatePenColor() {
 	var elem = document.getElementById("pencolor");
 	var elemtext = document.getElementById("pencolor-text");
-	elemtext.value = getHexString(pencolor);
+	elemtext.value = getHexString(pencolor,false);
 	elem.style.backgroundColor = getRGBAString(pencolor);
 }
 
