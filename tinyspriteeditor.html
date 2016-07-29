@@ -1328,6 +1328,41 @@ function hasOnionSkin() {
 	return onionskin.src.x != curtilex || onionskin.src.y != curtiley;
 }
 
+function pixelMouseEventHandler(e) {
+	var mousepressed = false;
+	if (e.type=="mousedown") {
+		mousepressed=true;
+	}
+	//e.preventDefault();
+	if (!mousepressed && !e.buttons) return;
+	if (curCommand) {
+		window["command"+curCommand](x,y);
+		closeCommand();
+		return;
+	}
+	var div = e.currentTarget;
+	var x = parseInt(e.currentTarget.dataset.x,10);
+	var y = parseInt(e.currentTarget.dataset.y,10);
+	var col = pickColor(curtilex*tilex + x,curtiley*tiley + y);
+	var pen = [pencolor[0],pencolor[1],pencolor[2],pencolor[3]];
+	if (col[3]!=0 && prevclick.x==x && prevclick.y==y) {
+		pen = [0,0,0,0];
+	}
+	var samecol =  col[0]==pen[0] && col[1]==pen[1]
+	            && col[2]==pen[2] && col[3]==pen[3];
+	setColor(spritecanvas,1,curtilex*tilex + x,curtiley*tiley + y,pen);
+	setColor(spritecanvaszoom,sprzoomlevel,
+		curtilex*tilex + x,curtiley*tiley + y, pen);
+	setColorPreviews(x,y,pen);
+	if (hasOnionSkin()) {
+		pen[3] *= onionskin.fgTrans;
+	}
+	div.style.backgroundColor = getRGBAString(pen);
+	prevclick.x = x;
+	prevclick.y = y;
+	if (!samecol) storeHistory(true);
+}
+
 function createPixelDiv(x,y) {
 	var div = document.createElement("div");
 	if (x==0) div.style.clear="both";
@@ -1341,39 +1376,10 @@ function createPixelDiv(x,y) {
 	div.style.backgroundColor = getRGBAString(bgcolor);
 	div.className = "pixel noselect";
 	div.style.border = gridthickness+"px solid "+gridcolor;
-
-	function pixelMouseEvent(e,mousepressed) {
-		//e.preventDefault();
-		// buttons not defined in older versions of Chrome, so we use
-		// mousepressed as a fallback
-		// https://bugs.chromium.org/p/chromium/issues/detail?id=276941
-		if (!mousepressed && !e.buttons) return;
-		if (curCommand) {
-			window["command"+curCommand](x,y);
-			closeCommand();
-			return;
-		}
-		var col = pickColor(curtilex*tilex + x,curtiley*tiley + y);
-		var pen = [pencolor[0],pencolor[1],pencolor[2],pencolor[3]];
-		if (col[3]!=0 && prevclick.x==x && prevclick.y==y) {
-			pen = [0,0,0,0];
-		}
-		var samecol =    col[0]==pen[0] && col[1]==pen[1]
-					  && col[2]==pen[2] && col[3]==pen[3];
-		setColor(spritecanvas,1,curtilex*tilex + x,curtiley*tiley + y,pen);
-		setColor(spritecanvaszoom,sprzoomlevel,
-			curtilex*tilex + x,curtiley*tiley + y, pen);
-		setColorPreviews(x,y,pen);
-		if (hasOnionSkin()) {
-			pen[3] *= onionskin.fgTrans;
-		}
-		div.style.backgroundColor = getRGBAString(pen);
-		prevclick.x = x;
-		prevclick.y = y;
-		if (!samecol) storeHistory(true);
-	}
-	div.addEventListener("mousedown",function(e) {pixelMouseEvent(e,true); } );
-	div.addEventListener("mouseover",function(e) {pixelMouseEvent(e,false); });
+	div.dataset.x=x;
+	div.dataset.y=y;
+	div.addEventListener("mousedown",pixelMouseEventHandler);
+	div.addEventListener("mouseover",pixelMouseEventHandler);
 	//div.addEventListener("touchstart",pixelMouseEvent);
 	//div.addEventListener("touchmove",pixelMouseEvent);
 	var bgdiv = createBGDiv(zoomlevel);
