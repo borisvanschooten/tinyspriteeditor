@@ -193,7 +193,7 @@ input[type="file"] {
 	<a href="http://tmtg.net/tinyspriteeditor/" target="_blank">Homepage.</a>
 	<a href="https://opensource.org/licenses/BSD-3-ClauseRevised"
 	target="_blank">BSD license.</a>
-	Download me and run locally! 
+	Download me and run locally!
 	<a href="https://github.com/borisvanschooten/tinyspriteeditor"
 	target="_blank">Modify me!</a>
 	</div>
@@ -286,7 +286,7 @@ input[type="file"] {
 	<div style="padding: 5px;"></div>
 	Animation
 	<div style="padding-top: 5px;"></div>
-	<button id="animtoggle" 
+	<button id="animtoggle"
 	style="padding-left: 0px; padding-right:0px; width: 55px;"
 	 onclick="toggleAnimation()">Play</button>
 	<button onclick="openPopup('animation',true);">⚙ Settings</button>
@@ -380,10 +380,10 @@ input[type="file"] {
 	 style="margin-top: 10px; margin-right: 10px; font-size:160%; background-color: #f88; float:left;">⚙ Settings</button>
 	<button onclick="createOutline()">Outline</button>
 	<button onclick="startCommand('ReplaceColor')">Replace color</button>
-	Delete: 
+	Delete:
 	<button onclick="startCommand('DelRow')">row</button>
 	<button onclick="startCommand('DelColumn')">column</button>
-	Insert: 
+	Insert:
 	<button onclick="startCommand('InsRow')">row</button>
 	<button onclick="startCommand('InsColumn')">column</button>
 	Rorschach:
@@ -429,7 +429,7 @@ input[type="file"] {
 	Click in textarea to select its contents.
 	</div>
 	<textarea style="width: 400px; height:50px; vertical-align: top;
-	font-size: 50%;" id="dataurl" 
+	font-size: 50%;" id="dataurl"
 		onclick="this.focus(); this.select();">
 	</textarea>
 </div>
@@ -646,7 +646,7 @@ var palettes = {
 	[120,120,120, 255],
 	[0,0,0, 255],
 	[0,0,0, 0],
-], "Comic": [ 
+], "Comic": [
 //http://kirbymuseum.org/blogs/simonandkirby/archives/tag/comic-book-colorists
 	[  0,170,239,255],
 	[101,209,244,255],
@@ -833,7 +833,7 @@ function configZoom() {
 function configGlobal() {
 	document.body.style.backgroundColor =
 		document.getElementById("globalbackground").value;
-	document.body.style.color = 
+	document.body.style.color =
 		document.getElementById("globalforeground").value;
 	//document.body.style.color = 0.3*pencolor[0]+0.55*pencolor[1]+0.15*pencolor[2] < 128
 	//	? "#fff" : "#000";
@@ -1348,7 +1348,7 @@ function createPixelDiv(x,y) {
 	div.style.backgroundColor = getRGBAString(bgcolor);
 	div.className = "pixel noselect";
 	div.style.border = gridthickness+"px solid "+gridcolor;
-	
+
 	function pixelMouseEvent(e,mousepressed) {
 		//e.preventDefault();
 		// buttons not defined in older versions of Chrome, so we use
@@ -1468,7 +1468,7 @@ function importImage() {
 }
 
 
-// currently only used for IE save png. 
+// currently only used for IE save png.
 function getBlobFromImage() {
 	if (document.getElementById("imgloadsavetarget").selectedIndex) {
 		copySpriteToBuffer(opbuffer);
@@ -1496,7 +1496,7 @@ function setImageFromDataUrl(url,target) {
 	img.onload = function() {
 		ctx = spritecanvas.getContext("2d");
 		if ( (target && target=="sprite")
-		||   (!target 
+		||   (!target
 		      && document.getElementById("imgloadsavetarget").selectedIndex)
 		) {
 			ctx.drawImage(img,0,0,tilex,tiley,
@@ -1892,7 +1892,7 @@ function transformSprite(op,param) {
 				col = [data[idx],data[idx+1],data[idx+2],data[idx+3]];
 			}
 			setColor(spritecanvas,1,curtilex*tilex + x,curtiley*tiley + y,col);
-			
+
 		}
 	}
 	storeHistory();
