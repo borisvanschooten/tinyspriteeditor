@@ -9,11 +9,14 @@ button, select, option {
 	font-size: 110%;
 }
 
-input.number {
-	width: 40px;
+input[type="number"] {
+	width: 4em;
 }
-input.color {
+input[type="color"] {
 	width: 85px;
+}
+input[type="range"] {
+	width: 80px;
 }
 div.pixel {
 }
@@ -197,65 +200,44 @@ input[type="file"] {
 	<div style="padding-left: 20px; font-weight:bold; font-size:120%;"
 	>Settings</div>
 	<div class="popup-form">
-		Tile width: <input class="number" id="cfg_tilex" type="textfield" value="12">
-		</input>
-		Tile height: <input class="number" id="cfg_tiley" type="textfield" value="12">
-		</input>
-		Nr tiles X: <input class="number" id="cfg_nrtilesx" type="textfield" value="8">
-		</input>
-		Nr tiles Y: <input class="number" id="cfg_nrtilesy" type="textfield" value="8">
-		</input>
+		<label>Tile width: <input id="cfg_tilex" type="number" value="12" min="1" step="1"></label>
+		<label>Tile height: <input id="cfg_tiley" type="number" value="12" min="1" step="1"></label>
+		<label>Nr tiles X: <input id="cfg_nrtilesx" type="number" value="8" min="1" step="1"></label>
+		<label>Nr tiles Y: <input id="cfg_nrtilesy" type="number" value="8" min="1" step="1"></label>
 		<button onclick="configSetSize();openPopup('settings',false);">Create new canvas</button>
 	</div>
 
 	<div class="popup-form">
-		Color for transparent background:
-		<input class="color" id="transparentcolor" type="textfield" value="#444">
-		</input>
-		<input type="checkbox" id="transparentchecker" checked="checked"> Use checkerboard</input>
+		<label>Color for transparent background:
+		<input id="transparentcolor" type="color" value="#444444"></label>
+		<label><input type="checkbox" id="transparentchecker" checked> Use checkerboard</label>
 		<button onclick="configSpriteBG();openPopup('settings',false);">Set !</button>
 	</div>
 
 	<div class="popup-form">
-		Grid: color
-		<input class="color" id="gridcolor" type="textfield" value="#000">
-		</input>
-		thickness
-		<input class="number" id="gridthickness" type="textfield" value="1">
-		</input>
-		Sprite select box color:
-		<input class="color" id="selectboxcolor" type="textfield" value="#ff0">
-		</input>
+		Grid:
+		<label>color <input id="gridcolor" type="color" value="#000000"></label>
+		<label>thickness <input id="gridthickness" type="number" value="1" min="1" step="1"></label>
+		<label>Sprite select box color: <input id="selectboxcolor" type="color" value="#ffff00"></label>
 		<button onclick="configGrid();openPopup('settings',false);">Set !</button>
 	</div>
 
 	<div class="popup-form">
-		Enlarged image zoom:
-		<input class="number" id="sprzoomlevel" type="textfield" value="4">
-		</input>
-		Edit area zoom:
-		<input class="number" id="zoomlevel" type="textfield" value="28">
-		</input>
+		<label>Enlarged image zoom: <input id="sprzoomlevel" type="number" value="4" min="1" step="1"></label>
+		<label>Edit area zoom: <input id="zoomlevel" type="number" value="28" min="1" step="1"></label>
 		<button onclick="configZoom();openPopup('settings',false);">Set !</button>
 	</div>
 
 	<div class="popup-form">
-		Global background color:
-		<input class="color" id="globalbackground" type="textfield" value="#ddd">
-		</input>
-		Global foreground color:
-		<input class="color" id="globalforeground" type="textfield" value="#000">
-		</input>
+		<label>Global background color: <input id="globalbackground" type="color" value="#dddddd"></label>
+		<label>Global foreground color: <input id="globalforeground" type="color" value="#000000"></label>
 		<button onclick="configGlobal();openPopup('settings',false);">Set !</button>
 	</div>
 
 	<div class="popup-form">
-		Onion skin: transparency:
-		<input class="number" id="onionskinbgtrans" type="textfield" value="1.0">
-		</input>
-		size:
-		<input class="number" id="onionskinsize" type="textfield" value="0.33">
-		</input>
+		Onion skin:
+		<label>transparency: <input id="onionskinbgtrans" type="range" value="1.0" min="0" max="1" step="0.1"></label>
+		<label>size: <input id="onionskinsize" type="range" value="0.33" min="0" max="1" step="0.1"></label>
 		<button onclick="configOnionSkin();openPopup('settings',false);">Set !</button>
 	</div>
 
@@ -269,14 +251,12 @@ input[type="file"] {
 	>Animation Settings</div>
 	<div class="popup-form">
 		<div style="padding-top: 10px;"></div>
-		Delay (milliseconds):
-		<input class="color" id="animdelay" type="textfield" value="200">
-		</input>
+		<label>Delay (milliseconds):
+		<input id="animdelay" type="number" value="200" min="40" max="1000" step="1"></label>
 		<div style="padding-top: 10px;"></div>
-		<input type="checkbox" id="animpingpong"></input> Ping-pong animation
+		<label><input type="checkbox" id="animpingpong"> Ping-pong animation</label>
 		<div style="padding-top: 10px; text-align:center;">
-			<button onclick="configAnim();openPopup('settings',false);">Set !
-			</button>
+			<button onclick="configAnim();openPopup('animation',false);">Set !</button>
 		</div>
 	</div>
 </div>
@@ -344,15 +324,15 @@ input[type="file"] {
 		<div></div>
 		<button style="margin-left: 15px;" onclick="mergeSprite()">Merge</button>
 		<div></div>
-		<input id="setonionskin" type="checkbox" style="margin-left: 15px;" onchange="setOnionSkin()">Onion Skin</input>
+		<label><input id="setonionskin" type="checkbox" style="margin-left: 15px;" onchange="setOnionSkin()">Onion Skin</label>
 	</div>
 	<div id="zoom" style="float:left;">
 	</div>
 	<div style="clear:both; padding-bottom: 35px;">
 		<div style="position:relative; height: 0px; top:5px;">
-			name: <input id="spritenameline" type="textfield"
+			<label>name: <input id="spritenameline" type="text"
 			 style="background-color: transparent;"
-			 onchange="storeSpriteNameLine()"></input>
+			 onchange="storeSpriteNameLine()"></label>
 		</div>
 		<div id="commandline" class="commandline">
 			<div class="commandline-bubble"></div>
@@ -369,12 +349,12 @@ input[type="file"] {
 			</div>
 		</div>
 		<div>
-			<input type="textfield" class="color" id="pencolor-text"
-			 onchange="setPenColorFromText();"></input>
+			<input type="color" id="pencolor-text"
+			 onchange="setPenColorFromText();">
 		</div>
 		<button onclick="startCommand('PickPenColor');">Pick color</button>
 		<div style="padding-bottom: 5px;">
-			Palette:<br>
+			<label>Palette:<br>
 			<select id="palettename" style="font-size:100%;" onchange="setPalette(this)">
 				<option value="Standard">Standard</option>
 				<option value="NES">NES 8bit</option>
@@ -382,7 +362,7 @@ input[type="file"] {
 				<option value="Pico8">Pico 8</option>
 				<option value="CBM64">CBM 64</option>
 				<option value="Puzzlescript">puzzlescript</option>
-			</select>
+			</select></label>
 		</div>
 	</div>
 
@@ -426,21 +406,21 @@ input[type="file"] {
 <div style="clear:both;" ></div>
 
 <div style="float:left; margin-top:10px;">
-	With
+	<label>With
 	<select id="imgloadsavetarget">
-	<option value="all">whole image</option>
-	<option value="sprite">current sprite</option>
-	</select>:
+		<option value="all">whole image</option>
+		<option value="sprite">current sprite</option>
+	</select></label>:
 	<a download="image.png" href="#" onclick="return savePNG(this)"
 	><button>Save PNG</button></a>
 	<label for="pngfile" class="anchorbutton">Load Image</label>
 	<input type="file" id="pngfile" onchange="loadPNG(this.files)"
-	accept="image/*"></input>
-	Text format:
+	accept="image/*">
+	<label>Text format:
 	<select id="textfiletype">
-	<option name="Data URL">Data URL</option>
-	<option name="Puzzlescript">Puzzlescript</option>
-	</select>
+		<option name="Data URL">Data URL</option>
+		<option name="Puzzlescript">Puzzlescript</option>
+	</select></label>
 	<button onclick="importImage()">Import</button>
 	<button onclick="exportImage()">Export</button>
 	<div></div>
@@ -449,7 +429,7 @@ input[type="file"] {
 	Click in textarea to select its contents.
 	</div>
 	<textarea style="width: 400px; height:50px; vertical-align: top;
-	font-size: 60%;" id="dataurl" 
+	font-size: 50%;" id="dataurl" 
 		onclick="this.focus(); this.select();">
 	</textarea>
 </div>
