@@ -207,38 +207,33 @@ input[type="file"] {
 		<button onclick="configSetSize();openPopup('settings',false);">Create new canvas</button>
 	</div>
 
-	<div class="popup-form">
+	<div class="popup-form" oninput="configSpriteBG();" onchange="configSpriteBG();">
 		<label>Color for transparent background:
 		<input id="transparentcolor" type="color" value="#444444"></label>
 		<label><input type="checkbox" id="transparentchecker" checked> Use checkerboard</label>
-		<button onclick="configSpriteBG();openPopup('settings',false);">Set !</button>
 	</div>
 
-	<div class="popup-form">
+	<div class="popup-form" oninput="configGrid();">
 		Grid:
 		<label>color <input id="gridcolor" type="color" value="#000000"></label>
-		<label>thickness <input id="gridthickness" type="number" value="1" min="1" step="1"></label>
+		<label>thickness <input id="gridthickness" type="number" value="1" min="0" step="1"></label>
 		<label>Sprite select box color: <input id="selectboxcolor" type="color" value="#ffff00"></label>
-		<button onclick="configGrid();openPopup('settings',false);">Set !</button>
 	</div>
 
-	<div class="popup-form">
+	<div class="popup-form" oninput="configZoom();">
 		<label>Enlarged image zoom: <input id="sprzoomlevel" type="number" value="4" min="1" step="1"></label>
 		<label>Edit area zoom: <input id="zoomlevel" type="number" value="28" min="1" step="1"></label>
-		<button onclick="configZoom();openPopup('settings',false);">Set !</button>
 	</div>
 
-	<div class="popup-form">
+	<div class="popup-form" oninput="configGlobal();">
 		<label>Global background color: <input id="globalbackground" type="color" value="#dddddd"></label>
 		<label>Global foreground color: <input id="globalforeground" type="color" value="#000000"></label>
-		<button onclick="configGlobal();openPopup('settings',false);">Set !</button>
 	</div>
 
-	<div class="popup-form">
+	<div class="popup-form" oninput="configOnionSkin();">
 		Onion skin:
 		<label>transparency: <input id="onionskinbgtrans" type="range" value="1.0" min="0" max="1" step="0.1"></label>
 		<label>size: <input id="onionskinsize" type="range" value="0.33" min="0" max="1" step="0.1"></label>
-		<button onclick="configOnionSkin();openPopup('settings',false);">Set !</button>
 	</div>
 
 </div>
@@ -249,15 +244,12 @@ input[type="file"] {
 	<div class="closepopup noselect" onclick="openPopup('animation',false)">×</div>
 	<div style="padding-left: 20px; font-weight:bold; font-size:120%;"
 	>Animation Settings</div>
-	<div class="popup-form">
+	<div class="popup-form" oninput="configAnim();" onchange="configAnim();">
 		<div style="padding-top: 10px;"></div>
 		<label>Delay (milliseconds):
 		<input id="animdelay" type="number" value="200" min="40" max="1000" step="1"></label>
 		<div style="padding-top: 10px;"></div>
 		<label><input type="checkbox" id="animpingpong"> Ping-pong animation</label>
-		<div style="padding-top: 10px; text-align:center;">
-			<button onclick="configAnim();openPopup('animation',false);">Set !</button>
-		</div>
 	</div>
 </div>
 
