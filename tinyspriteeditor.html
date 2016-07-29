@@ -9,11 +9,14 @@ button, select, option {
 	font-size: 110%;
 }
 
-input.number {
-	width: 40px;
+input[type="number"] {
+	width: 4em;
 }
-input.color {
+input[type="color"] {
 	width: 85px;
+}
+input[type="range"] {
+	width: 80px;
 }
 div.pixel {
 }
@@ -50,6 +53,7 @@ input[type="file"] {
 }
 
 .onionskin-bg {
+	pointer-events: none;
 }
 
 .zoomcontainer {
@@ -133,7 +137,7 @@ input[type="file"] {
     border-width: 8px;
 	left: 25px;
     top: -16px;
-	pointer-events:none;
+	pointer-events: none;
 }
 
 .closecommand {
@@ -190,73 +194,47 @@ input[type="file"] {
 	<a href="http://tmtg.net/tinyspriteeditor/" target="_blank">Homepage.</a>
 	<a href="https://opensource.org/licenses/BSD-3-ClauseRevised"
 	target="_blank">BSD license.</a>
-	Download me and run locally! 
+	Download me and run locally!
 	<a href="https://github.com/borisvanschooten/tinyspriteeditor"
 	target="_blank">Modify me!</a>
 	</div>
 	<div style="padding-left: 20px; font-weight:bold; font-size:120%;"
 	>Settings</div>
 	<div class="popup-form">
-		Tile width: <input class="number" id="cfg_tilex" type="textfield" value="12">
-		</input>
-		Tile height: <input class="number" id="cfg_tiley" type="textfield" value="12">
-		</input>
-		Nr tiles X: <input class="number" id="cfg_nrtilesx" type="textfield" value="8">
-		</input>
-		Nr tiles Y: <input class="number" id="cfg_nrtilesy" type="textfield" value="8">
-		</input>
+		<label>Tile width: <input id="cfg_tilex" type="number" value="12" min="1" step="1"></label>
+		<label>Tile height: <input id="cfg_tiley" type="number" value="12" min="1" step="1"></label>
+		<label>Nr tiles X: <input id="cfg_nrtilesx" type="number" value="8" min="1" step="1"></label>
+		<label>Nr tiles Y: <input id="cfg_nrtilesy" type="number" value="8" min="1" step="1"></label>
 		<button onclick="configSetSize();openPopup('settings',false);">Create new canvas</button>
 	</div>
 
-	<div class="popup-form">
-		Color for transparent background:
-		<input class="color" id="transparentcolor" type="textfield" value="#444">
-		</input>
-		<input type="checkbox" id="transparentchecker" checked="checked"> Use checkerboard</input>
-		<button onclick="configSpriteBG();openPopup('settings',false);">Set !</button>
+	<div class="popup-form" oninput="configSpriteBG();" onchange="configSpriteBG();">
+		<label>Color for transparent background:
+		<input id="transparentcolor" type="color" value="#444444"></label>
+		<label><input type="checkbox" id="transparentchecker" checked> Use checkerboard</label>
 	</div>
 
-	<div class="popup-form">
-		Grid: color
-		<input class="color" id="gridcolor" type="textfield" value="#000">
-		</input>
-		thickness
-		<input class="number" id="gridthickness" type="textfield" value="1">
-		</input>
-		Sprite select box color:
-		<input class="color" id="selectboxcolor" type="textfield" value="#ff0">
-		</input>
-		<button onclick="configGrid();openPopup('settings',false);">Set !</button>
+	<div class="popup-form" oninput="configGrid();">
+		Grid:
+		<label>color <input id="gridcolor" type="color" value="#000000"></label>
+		<label>thickness <input id="gridthickness" type="number" value="1" min="0" step="1"></label>
+		<label>Sprite select box color: <input id="selectboxcolor" type="color" value="#ffff00"></label>
 	</div>
 
-	<div class="popup-form">
-		Enlarged image zoom:
-		<input class="number" id="sprzoomlevel" type="textfield" value="4">
-		</input>
-		Edit area zoom:
-		<input class="number" id="zoomlevel" type="textfield" value="28">
-		</input>
-		<button onclick="configZoom();openPopup('settings',false);">Set !</button>
+	<div class="popup-form" oninput="configZoom();">
+		<label>Enlarged image zoom: <input id="sprzoomlevel" type="number" value="4" min="1" step="1"></label>
+		<label>Edit area zoom: <input id="zoomlevel" type="number" value="28" min="1" step="1"></label>
 	</div>
 
-	<div class="popup-form">
-		Global background color:
-		<input class="color" id="globalbackground" type="textfield" value="#ddd">
-		</input>
-		Global foreground color:
-		<input class="color" id="globalforeground" type="textfield" value="#000">
-		</input>
-		<button onclick="configGlobal();openPopup('settings',false);">Set !</button>
+	<div class="popup-form" oninput="configGlobal();">
+		<label>Global background color: <input id="globalbackground" type="color" value="#dddddd"></label>
+		<label>Global foreground color: <input id="globalforeground" type="color" value="#000000"></label>
 	</div>
 
-	<div class="popup-form">
-		Onion skin: transparency:
-		<input class="number" id="onionskinbgtrans" type="textfield" value="1.0">
-		</input>
-		size:
-		<input class="number" id="onionskinsize" type="textfield" value="0.33">
-		</input>
-		<button onclick="configOnionSkin();openPopup('settings',false);">Set !</button>
+	<div class="popup-form" oninput="configOnionSkin();">
+		Onion skin:
+		<label>transparency: <input id="onionskinbgtrans" type="range" value="1.0" min="0" max="1" step="0.1"></label>
+		<label>size: <input id="onionskinsize" type="range" value="0.33" min="0" max="1" step="0.1"></label>
 	</div>
 
 </div>
@@ -267,17 +245,12 @@ input[type="file"] {
 	<div class="closepopup noselect" onclick="openPopup('animation',false)">×</div>
 	<div style="padding-left: 20px; font-weight:bold; font-size:120%;"
 	>Animation Settings</div>
-	<div class="popup-form">
+	<div class="popup-form" oninput="configAnim();" onchange="configAnim();">
 		<div style="padding-top: 10px;"></div>
-		Delay (milliseconds):
-		<input class="color" id="animdelay" type="textfield" value="200">
-		</input>
+		<label>Delay (milliseconds):
+		<input id="animdelay" type="number" value="200" min="40" max="1000" step="1"></label>
 		<div style="padding-top: 10px;"></div>
-		<input type="checkbox" id="animpingpong"></input> Ping-pong animation
-		<div style="padding-top: 10px; text-align:center;">
-			<button onclick="configAnim();openPopup('settings',false);">Set !
-			</button>
-		</div>
+		<label><input type="checkbox" id="animpingpong"> Ping-pong animation</label>
 	</div>
 </div>
 
@@ -306,7 +279,7 @@ input[type="file"] {
 	<div style="padding: 5px;"></div>
 	Animation
 	<div style="padding-top: 5px;"></div>
-	<button id="animtoggle" 
+	<button id="animtoggle"
 	style="padding-left: 0px; padding-right:0px; width: 55px;"
 	 onclick="toggleAnimation()">Play</button>
 	<button onclick="openPopup('animation',true);">⚙ Settings</button>
@@ -344,15 +317,15 @@ input[type="file"] {
 		<div></div>
 		<button style="margin-left: 15px;" onclick="mergeSprite()">Merge</button>
 		<div></div>
-		<input id="setonionskin" type="checkbox" style="margin-left: 15px;" onchange="setOnionSkin()">Onion Skin</input>
+		<label><input id="setonionskin" type="checkbox" style="margin-left: 15px;" onchange="setOnionSkin()">Onion Skin</label>
 	</div>
 	<div id="zoom" style="float:left;">
 	</div>
 	<div style="clear:both; padding-bottom: 35px;">
 		<div style="position:relative; height: 0px; top:5px;">
-			name: <input id="spritenameline" type="textfield"
+			<label>name: <input id="spritenameline" type="text"
 			 style="background-color: transparent;"
-			 onchange="storeSpriteNameLine()"></input>
+			 onchange="storeSpriteNameLine()"></label>
 		</div>
 		<div id="commandline" class="commandline">
 			<div class="commandline-bubble"></div>
@@ -369,12 +342,12 @@ input[type="file"] {
 			</div>
 		</div>
 		<div>
-			<input type="textfield" class="color" id="pencolor-text"
-			 onchange="setPenColorFromText();"></input>
+			<input type="text" id="pencolor-text"
+			 onchange="setPenColorFromText();">
 		</div>
 		<button onclick="startCommand('PickPenColor');">Pick color</button>
 		<div style="padding-bottom: 5px;">
-			Palette:<br>
+			<label>Palette:<br>
 			<select id="palettename" style="font-size:100%;" onchange="setPalette(this)">
 				<option value="Standard">Standard</option>
 				<option value="NES">NES 8bit</option>
@@ -382,7 +355,7 @@ input[type="file"] {
 				<option value="Pico8">Pico 8</option>
 				<option value="CBM64">CBM 64</option>
 				<option value="Puzzlescript">puzzlescript</option>
-			</select>
+			</select></label>
 		</div>
 	</div>
 
@@ -400,10 +373,10 @@ input[type="file"] {
 	 style="margin-top: 10px; margin-right: 10px; font-size:160%; background-color: #f88; float:left;">⚙ Settings</button>
 	<button onclick="createOutline()">Outline</button>
 	<button onclick="startCommand('ReplaceColor')">Replace color</button>
-	Delete: 
+	Delete:
 	<button onclick="startCommand('DelRow')">row</button>
 	<button onclick="startCommand('DelColumn')">column</button>
-	Insert: 
+	Insert:
 	<button onclick="startCommand('InsRow')">row</button>
 	<button onclick="startCommand('InsColumn')">column</button>
 	Rorschach:
@@ -426,21 +399,21 @@ input[type="file"] {
 <div style="clear:both;" ></div>
 
 <div style="float:left; margin-top:10px;">
-	With
+	<label>With
 	<select id="imgloadsavetarget">
-	<option value="all">whole image</option>
-	<option value="sprite">current sprite</option>
-	</select>:
+		<option value="all">whole image</option>
+		<option value="sprite">current sprite</option>
+	</select></label>:
 	<a download="image.png" href="#" onclick="return savePNG(this)"
 	><button>Save PNG</button></a>
 	<label for="pngfile" class="anchorbutton">Load Image</label>
 	<input type="file" id="pngfile" onchange="loadPNG(this.files)"
-	accept="image/*"></input>
-	Text format:
+	accept="image/*">
+	<label>Text format:
 	<select id="textfiletype">
-	<option name="Data URL">Data URL</option>
-	<option name="Puzzlescript">Puzzlescript</option>
-	</select>
+		<option name="Data URL">Data URL</option>
+		<option name="Puzzlescript">Puzzlescript</option>
+	</select></label>
 	<button onclick="importImage()">Import</button>
 	<button onclick="exportImage()">Export</button>
 	<div></div>
@@ -449,7 +422,7 @@ input[type="file"] {
 	Click in textarea to select its contents.
 	</div>
 	<textarea style="width: 400px; height:50px; vertical-align: top;
-	font-size: 60%;" id="dataurl" 
+	font-size: 50%;" id="dataurl"
 		onclick="this.focus(); this.select();">
 	</textarea>
 </div>
@@ -666,7 +639,7 @@ var palettes = {
 	[120,120,120, 255],
 	[0,0,0, 255],
 	[0,0,0, 0],
-], "Comic": [ 
+], "Comic": [
 //http://kirbymuseum.org/blogs/simonandkirby/archives/tag/comic-book-colorists
 	[  0,170,239,255],
 	[101,209,244,255],
@@ -813,10 +786,10 @@ spritecanvaszoom.addEventListener("click", function(e) {
 function configSetSize() {
 	var res = confirm("This operation cannot be undone! Continue?");
 	if (!res) return;
-	tilex = parseInt(document.getElementById("cfg_tilex").value);
-	tiley = parseInt(document.getElementById("cfg_tiley").value);
-	nrtilesx = parseInt(document.getElementById("cfg_nrtilesx").value);
-	nrtilesy = parseInt(document.getElementById("cfg_nrtilesy").value);
+	tilex = parseInt(document.getElementById("cfg_tilex").value,10);
+	tiley = parseInt(document.getElementById("cfg_tiley").value,10);
+	nrtilesx = parseInt(document.getElementById("cfg_nrtilesx").value,10);
+	nrtilesy = parseInt(document.getElementById("cfg_nrtilesy").value,10);
 	spritenames = {};
 	updateCanvasSizes();
 }
@@ -829,7 +802,7 @@ function configSpriteBG() {
 
 function configGrid() {
 	gridcolor = document.getElementById("gridcolor").value;
-	gridthickness = parseInt(document.getElementById("gridthickness").value);
+	gridthickness = parseInt(document.getElementById("gridthickness").value,10);
 	selectboxcolor = document.getElementById("selectboxcolor").value;
 	updateTileSelect("tileselect",1);
 	updateTileSelect("tileselect_l",sprzoomlevel);
@@ -838,8 +811,8 @@ function configGrid() {
 }
 
 function configZoom() {
-	zoomlevel = parseInt(document.getElementById("zoomlevel").value);
-	sprzoomlevel = parseInt(document.getElementById("sprzoomlevel").value);
+	zoomlevel = parseInt(document.getElementById("zoomlevel").value,10);
+	sprzoomlevel = parseInt(document.getElementById("sprzoomlevel").value,10);
 	updateCanvasSize(spritecanvaszoom,sprzoomlevel);
 	updateTileSelect("tileselect",1);
 	updateTileSelect("tileselect_l",sprzoomlevel);
@@ -853,7 +826,7 @@ function configZoom() {
 function configGlobal() {
 	document.body.style.backgroundColor =
 		document.getElementById("globalbackground").value;
-	document.body.style.color = 
+	document.body.style.color =
 		document.getElementById("globalforeground").value;
 	//document.body.style.color = 0.3*pencolor[0]+0.55*pencolor[1]+0.15*pencolor[2] < 128
 	//	? "#fff" : "#000";
@@ -873,7 +846,7 @@ function setAnimFrame(which) {
 }
 
 function configAnim() {
-	anim.delay = parseInt(document.getElementById("animdelay").value);
+	anim.delay = parseInt(document.getElementById("animdelay").value,10);
 	if (anim.delay < 40) anim.delay = 40;
 	if (anim.delay > 1000) anim.delay = 1000;
 	anim.pingpong = document.getElementById("animpingpong").checked;
@@ -922,7 +895,7 @@ function setPalette(elem) {
 function updatePenColor() {
 	var elem = document.getElementById("pencolor");
 	var elemtext = document.getElementById("pencolor-text");
-	elemtext.value = getHexString(pencolor);
+	elemtext.value = getHexString(pencolor,false);
 	elem.style.backgroundColor = getRGBAString(pencolor);
 }
 
@@ -1355,6 +1328,41 @@ function hasOnionSkin() {
 	return onionskin.src.x != curtilex || onionskin.src.y != curtiley;
 }
 
+function pixelMouseEventHandler(e) {
+	var mousepressed = false;
+	if (e.type=="mousedown") {
+		mousepressed=true;
+	}
+	//e.preventDefault();
+	if (!mousepressed && !e.buttons) return;
+	if (curCommand) {
+		window["command"+curCommand](x,y);
+		closeCommand();
+		return;
+	}
+	var div = e.currentTarget;
+	var x = parseInt(e.currentTarget.dataset.x,10);
+	var y = parseInt(e.currentTarget.dataset.y,10);
+	var col = pickColor(curtilex*tilex + x,curtiley*tiley + y);
+	var pen = [pencolor[0],pencolor[1],pencolor[2],pencolor[3]];
+	if (col[3]!=0 && prevclick.x==x && prevclick.y==y) {
+		pen = [0,0,0,0];
+	}
+	var samecol =  col[0]==pen[0] && col[1]==pen[1]
+	            && col[2]==pen[2] && col[3]==pen[3];
+	setColor(spritecanvas,1,curtilex*tilex + x,curtiley*tiley + y,pen);
+	setColor(spritecanvaszoom,sprzoomlevel,
+		curtilex*tilex + x,curtiley*tiley + y, pen);
+	setColorPreviews(x,y,pen);
+	if (hasOnionSkin()) {
+		pen[3] *= onionskin.fgTrans;
+	}
+	div.style.backgroundColor = getRGBAString(pen);
+	prevclick.x = x;
+	prevclick.y = y;
+	if (!samecol) storeHistory(true);
+}
+
 function createPixelDiv(x,y) {
 	var div = document.createElement("div");
 	if (x==0) div.style.clear="both";
@@ -1368,39 +1376,10 @@ function createPixelDiv(x,y) {
 	div.style.backgroundColor = getRGBAString(bgcolor);
 	div.className = "pixel noselect";
 	div.style.border = gridthickness+"px solid "+gridcolor;
-	
-	function pixelMouseEvent(e,mousepressed) {
-		//e.preventDefault();
-		// buttons not defined in older versions of Chrome, so we use
-		// mousepressed as a fallback
-		// https://bugs.chromium.org/p/chromium/issues/detail?id=276941
-		if (!mousepressed && !e.buttons) return;
-		if (curCommand) {
-			window["command"+curCommand](x,y);
-			closeCommand();
-			return;
-		}
-		var col = pickColor(curtilex*tilex + x,curtiley*tiley + y);
-		var pen = [pencolor[0],pencolor[1],pencolor[2],pencolor[3]];
-		if (col[3]!=0 && prevclick.x==x && prevclick.y==y) {
-			pen = [0,0,0,0];
-		}
-		var samecol =    col[0]==pen[0] && col[1]==pen[1]
-					  && col[2]==pen[2] && col[3]==pen[3];
-		setColor(spritecanvas,1,curtilex*tilex + x,curtiley*tiley + y,pen);
-		setColor(spritecanvaszoom,sprzoomlevel,
-			curtilex*tilex + x,curtiley*tiley + y, pen);
-		setColorPreviews(x,y,pen);
-		if (hasOnionSkin()) {
-			pen[3] *= onionskin.fgTrans;
-		}
-		div.style.backgroundColor = getRGBAString(pen);
-		prevclick.x = x;
-		prevclick.y = y;
-		if (!samecol) storeHistory(true);
-	}
-	div.addEventListener("mousedown",function(e) {pixelMouseEvent(e,true); } );
-	div.addEventListener("mouseover",function(e) {pixelMouseEvent(e,false); });
+	div.dataset.x=x;
+	div.dataset.y=y;
+	div.addEventListener("mousedown",pixelMouseEventHandler);
+	div.addEventListener("mouseover",pixelMouseEventHandler);
 	//div.addEventListener("touchstart",pixelMouseEvent);
 	//div.addEventListener("touchmove",pixelMouseEvent);
 	var bgdiv = createBGDiv(zoomlevel);
@@ -1488,7 +1467,7 @@ function importImage() {
 }
 
 
-// currently only used for IE save png. 
+// currently only used for IE save png.
 function getBlobFromImage() {
 	if (document.getElementById("imgloadsavetarget").selectedIndex) {
 		copySpriteToBuffer(opbuffer);
@@ -1516,7 +1495,7 @@ function setImageFromDataUrl(url,target) {
 	img.onload = function() {
 		ctx = spritecanvas.getContext("2d");
 		if ( (target && target=="sprite")
-		||   (!target 
+		||   (!target
 		      && document.getElementById("imgloadsavetarget").selectedIndex)
 		) {
 			ctx.drawImage(img,0,0,tilex,tiley,
@@ -1912,7 +1891,7 @@ function transformSprite(op,param) {
 				col = [data[idx],data[idx+1],data[idx+2],data[idx+3]];
 			}
 			setColor(spritecanvas,1,curtilex*tilex + x,curtiley*tiley + y,col);
-			
+
 		}
 	}
 	storeHistory();
