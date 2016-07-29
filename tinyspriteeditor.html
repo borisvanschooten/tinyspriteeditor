@@ -786,10 +786,10 @@ spritecanvaszoom.addEventListener("click", function(e) {
 function configSetSize() {
 	var res = confirm("This operation cannot be undone! Continue?");
 	if (!res) return;
-	tilex = parseInt(document.getElementById("cfg_tilex").value);
-	tiley = parseInt(document.getElementById("cfg_tiley").value);
-	nrtilesx = parseInt(document.getElementById("cfg_nrtilesx").value);
-	nrtilesy = parseInt(document.getElementById("cfg_nrtilesy").value);
+	tilex = parseInt(document.getElementById("cfg_tilex").value,10);
+	tiley = parseInt(document.getElementById("cfg_tiley").value,10);
+	nrtilesx = parseInt(document.getElementById("cfg_nrtilesx").value,10);
+	nrtilesy = parseInt(document.getElementById("cfg_nrtilesy").value,10);
 	spritenames = {};
 	updateCanvasSizes();
 }
@@ -802,7 +802,7 @@ function configSpriteBG() {
 
 function configGrid() {
 	gridcolor = document.getElementById("gridcolor").value;
-	gridthickness = parseInt(document.getElementById("gridthickness").value);
+	gridthickness = parseInt(document.getElementById("gridthickness").value,10);
 	selectboxcolor = document.getElementById("selectboxcolor").value;
 	updateTileSelect("tileselect",1);
 	updateTileSelect("tileselect_l",sprzoomlevel);
@@ -811,8 +811,8 @@ function configGrid() {
 }
 
 function configZoom() {
-	zoomlevel = parseInt(document.getElementById("zoomlevel").value);
-	sprzoomlevel = parseInt(document.getElementById("sprzoomlevel").value);
+	zoomlevel = parseInt(document.getElementById("zoomlevel").value,10);
+	sprzoomlevel = parseInt(document.getElementById("sprzoomlevel").value,10);
 	updateCanvasSize(spritecanvaszoom,sprzoomlevel);
 	updateTileSelect("tileselect",1);
 	updateTileSelect("tileselect_l",sprzoomlevel);
@@ -846,7 +846,7 @@ function setAnimFrame(which) {
 }
 
 function configAnim() {
-	anim.delay = parseInt(document.getElementById("animdelay").value);
+	anim.delay = parseInt(document.getElementById("animdelay").value,10);
 	if (anim.delay < 40) anim.delay = 40;
 	if (anim.delay > 1000) anim.delay = 1000;
 	anim.pingpong = document.getElementById("animpingpong").checked;
