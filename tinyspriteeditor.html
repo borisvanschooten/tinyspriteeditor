@@ -438,7 +438,8 @@ input[type="file"] {
 	accept="image/*"></input>
 	Text format:
 	<select id="textfiletype">
-	<option name="Data URL">Data URL</option>
+	<option name="DataURL">Data URL</option>
+	<option name="CellScript">CellScript</option>
 	<option name="Puzzlescript">Puzzlescript</option>
 	</select>
 	<button onclick="importImage()">Import</button>
@@ -1472,16 +1473,23 @@ function updatePalette() {
 // load/save
 
 function exportImage() {
-	if (!document.getElementById("textfiletype").selectedIndex) {
-		exportDataUrl();
-	} else { // 1
+	var select = document.getElementById("textfiletype").selectedIndex;
+	if (select==0) {
+		exportDataUrl(false);
+	} else if (select==1) {
+		exportDataUrl(true);
+	} else { // 2
 		exportImagePuzzleScript();
 	}
 }
 
 function importImage() {
-	if (!document.getElementById("textfiletype").selectedIndex) {
+	var select = document.getElementById("textfiletype").selectedIndex;
+	if (select==0) {
 		setImageFromDataUrl(dataurl.value);
+	} else if (select==1) {
+		var url = dataurl.value.split(/\s+/);
+		if (url.length >= 1) setImageFromDataUrl(url[url.length-1]);
 	} else {
 		setImageFromPuzzleScript(dataurl.value);
 	}
@@ -1507,8 +1515,12 @@ function getDataUrlFromImage() {
 	}
 }
 
-function exportDataUrl() {
-	dataurl.value = getDataUrlFromImage();
+function exportDataUrl(cellscript) {
+	var val = getDataUrlFromImage();
+	if (cellscript) 
+		val = "tilemap: "+tilex+" "+tiley+" "+nrtilesx+" "+nrtilesy
+		+" false "+val;
+	dataurl.value = val;
 }
 
 function setImageFromDataUrl(url,target) {
