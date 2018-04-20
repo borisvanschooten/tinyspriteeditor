@@ -350,6 +350,7 @@ input[type="file"] {
 	</div>
 	<div style="clear:both; padding-bottom: 35px;">
 		<div style="position:relative; height: 0px; top:5px;">
+			index: <span id="spriteindexline">0</span>;
 			name: <input id="spritenameline" type="textfield"
 			 style="background-color: transparent;"
 			 onchange="storeSpriteNameLine()"></input>
@@ -463,6 +464,7 @@ var zoom = document.getElementById("zoom");
 var palette = document.getElementById("palette");
 var dataurl = document.getElementById("dataurl");
 var spritenameline = document.getElementById("spritenameline");
+var spriteindexline = document.getElementById("spriteindexline");
 
 var undohistory;
 var cutbuffer, opbuffer;
@@ -1039,6 +1041,7 @@ function updateZoom() {
 		}
 	}
 	updateSpriteNameLine();
+	updateSpriteIndexLine();
 	updateSpriteBG();
 	// do autosave here to ensure data is saved often without noticing slowdown
 	doAutosave(false);
@@ -1061,6 +1064,10 @@ function updateSpriteNameLine() {
 
 function storeSpriteNameLine() {
 	spritenames[curtilex+","+curtiley] = spritenameline.value;
+}
+
+function updateSpriteIndexLine() {
+	spriteindexline.innerText = curtilex + nrtilesx*curtiley;
 }
 
 // ------------------------------------------------------------
