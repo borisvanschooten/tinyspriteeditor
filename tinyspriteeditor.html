@@ -326,27 +326,27 @@ input[type="file"] {
 		style="position:relative; width:8px; height:8px; border: 1px solid green;"
 		></div>
 	</div>
-	<canvas id="sprite_l" class="sprite-bg" width=40 height=40 style="border: 1px solid black;">
+	<canvas id="sprite_l" class="sprite-bg" width=40 height=40 tabindex="1" style="border: 1px solid black;">
 	</canvas>
 </div>
 
 <div class="zoomcontainer">
 	<div style="float:right;">
-		<button style="margin-left: 15px;" onclick="retrieveHistory(false)">Undo</button>
+		<button style="margin-left: 15px;" onclick="retrieveHistory(false)">Undo (z)</button>
 		<div></div>
-		<button style="margin-left: 15px;" onclick="retrieveHistory(true)">Redo</button>
+		<button style="margin-left: 15px;" onclick="retrieveHistory(true)">Redo (y)</button>
 		<div></div>
-		<button style="margin-left: 15px;" onclick="cutSprite()">Cut</button>
+		<button style="margin-left: 15px;" onclick="cutSprite()">Cut (x)</button>
 		<div></div>
-		<button style="margin-left: 15px;" onclick="copySprite()">Copy</button>
+		<button style="margin-left: 15px;" onclick="copySprite()">Copy (c)</button>
 		<div></div>
-		<button style="margin-left: 15px;" onclick="pasteSprite()">Paste</button>
+		<button style="margin-left: 15px;" onclick="pasteSprite()">Paste (v)</button>
 		<div></div>
-		<button style="margin-left: 15px;" onclick="mergeSprite()">Merge</button>
+		<button style="margin-left: 15px;" onclick="mergeSprite()">Merge (m)</button>
 		<div></div>
 		<input id="setonionskin" type="checkbox" style="margin-left: 15px;" onchange="setOnionSkin()">Onion Skin</input>
 	</div>
-	<div id="zoom" style="float:left;">
+	<div id="zoom" tabindex="2" style="float:left;">
 	</div>
 	<div style="clear:both; padding-bottom: 35px;">
 		<div style="position:relative; height: 0px; top:5px;">
@@ -801,13 +801,8 @@ spritecanvaszoom.addEventListener("click", function(e) {
 	var rect = spritecanvaszoom.getBoundingClientRect();
 	curtilex = Math.floor((e.clientX-rect.left) / (sprzoomlevel*tilex) );
 	curtiley = Math.floor((e.clientY-rect.top) / (sprzoomlevel*tiley) );
-	prevclick = {x:-1,y:-1};
-	updateTileSelect("tileselect",1);
-	updateTileSelect("tileselect_l",sprzoomlevel);
-	updateZoom();
-	updatePreviews();
+	updateNewSpriteSelected();
 }, false);
-
 
 
 // ------------------------------------------------------------
@@ -921,6 +916,16 @@ function setPalette(elem) {
 
 // ------------------------------------------------------------
 // update
+
+
+function updateNewSpriteSelected() {
+	prevclick = {x:-1,y:-1};
+	updateTileSelect("tileselect",1);
+	updateTileSelect("tileselect_l",sprzoomlevel);
+	updateZoom();
+	updatePreviews();
+}
+
 
 function updatePenColor() {
 	var elem = document.getElementById("pencolor");
@@ -1959,6 +1964,51 @@ function copyMirrorX() {
 function copyMirrorY() {
 	transformSprite("CopyMirrorY");
 }
+function handleShortcutKey(e) {
+	// ctrl and alt combinations never arrive as events on some systems
+	//https://stackoverflow.com/questions/47172613/not-being-able-to-capture-ctrltab-keyboard-event-in-pop-up-mode-of-the-firefo
+	//if (e.ctrlKey || e.metaKey) {
+		if (e.key == 'c') {
+			copySprite();
+			e.preventDefault();
+		} else if (e.key == 'v') {
+			pasteSprite();
+			e.preventDefault();
+		} else if (e.key == 'x') {
+			cutSprite();
+			e.preventDefault();
+		} else if (e.key == 'm') {
+			mergeSprite();
+			e.preventDefault();
+		} else if (e.key == 'z') {
+			retrieveHistory(false)
+			e.preventDefault();
+		} else if (e.key == 'y') {
+			retrieveHistory(true)
+			e.preventDefault();
+		} else if (e.key == 'ArrowUp') {
+			if (curtiley > 0) curtiley--;
+			updateNewSpriteSelected();
+			e.preventDefault();
+		} else if (e.key == 'ArrowDown') {
+			if (curtiley < nrtilesy-1) curtiley++;
+			updateNewSpriteSelected();
+			e.preventDefault();
+		} else if (e.key == 'ArrowLeft') {
+			if (curtilex > 0) curtilex--;
+			updateNewSpriteSelected();
+			e.preventDefault();
+		} else if (e.key == 'ArrowRight') {
+			if (curtilex < nrtilesx-1) curtilex++;
+			updateNewSpriteSelected();
+			e.preventDefault();
+		}
+	//}
+	return true;
+}
+
+spritecanvaszoom.addEventListener( "keypress", handleShortcutKey, false );
+zoom.addEventListener( "keypress", handleShortcutKey, false );
 
 
 updatePalette();
